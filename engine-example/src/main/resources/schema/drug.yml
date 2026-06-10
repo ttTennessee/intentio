@@ -1,0 +1,21 @@
+entity:
+  Drug:
+    table: drug
+    fields:
+      id:       { type: long,   pk: true, auto_increment: true }
+      name:     { type: string, required: true, length: 64 }
+      unit:     { type: string, required: true }
+      category: { type: enum,   values: [western, chinese] }
+
+  DrugStock:
+    table: drug_stock
+    fields:
+      id:       { type: long,    pk: true, auto_increment: true }
+      drug_id:  { type: long,    required: true }
+      quantity: { type: decimal, required: true, precision: 10, scale: 3 }
+    relations:
+      drug: { kind: belongs_to, entity: Drug, fk: drug_id }
+    integrity:
+      quantity:
+        rule: "quantity >= 0"
+        message: "库存不能为负数"

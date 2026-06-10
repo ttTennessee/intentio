@@ -1,0 +1,34 @@
+entity:
+  Prescription:
+    table: prescription
+    fields:
+      id:        { type: long,    pk: true, auto_increment: true }
+      clinic_id: { type: long,    required: true }
+      patient:   { type: string,  required: true, length: 64 }
+      issued_at: { type: date,    required: true }
+      status:    { type: enum,    values: [draft, issued, cancelled], default: draft }
+    relations:
+      items:  { kind: has_many,   entity: PrescriptionItem, fk: prescription_id }
+    integrity:
+      on_create:
+        require_has: items
+        min: 1
+
+  PrescriptionItem:
+    table: prescription_item
+    fields:
+      id:              { type: long,    pk: true, auto_increment: true }
+      prescription_id: { type: long,    required: true }
+      drug_id:         { type: long,    required: true }
+      weight:          { type: decimal, required: true, precision: 8,  scale: 3 }
+      unit_price:      { type: decimal, required: true, precision: 10, scale: 2 }
+    relations:
+      drug: { kind: belongs_to, entity: Drug, fk: drug_id }
+    integrity:
+      on_create:
+        stock_check:
+          via: DrugStock
+          fk: drug_id
+          field: quantity
+          rule: "stock.quantity >= item.weight"
+          message: "库存不足"
