@@ -38,7 +38,8 @@ bin/
 
 # AI / 本地工具配置
 .claude/
-.understand-anything/
+.understand-anything/.trash*
+.understand-anything/tmp
 .codegraph/
 
 # 日志与临时文件

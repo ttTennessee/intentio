@@ -1,0 +1,5063 @@
+{
+  "nodes": [
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "type": "file",
+      "name": "ConstraintEngine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "summary": "约束引擎门面，在操作执行前后按实体完整性规则调度 stock_check、ref_check 与 require_has 校验，并在 INSERT 时自动验证 belongs_to 外键引用。",
+      "tags": [
+        "constraint",
+        "validation",
+        "service",
+        "integrity",
+        "pre-post-check"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用 Java switch 表达式按 OpType 与 Rule.Type 分派到具体规则处理器。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "class",
+      "name": "ConstraintEngine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        16,
+        91
+      ],
+      "summary": "聚合 SchemaRegistry、VirtualMachine 与三类规则实现，对外提供 checkPre/checkPost 两个约束检查入口。",
+      "tags": [
+        "constraint",
+        "facade",
+        "orchestration",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "function",
+      "name": "checkPre",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        31,
+        51
+      ],
+      "summary": "执行前约束检查：遍历 onCreate/onUpdate/onDelete 规则，处理库存与引用校验，INSERT 时额外验证 belongs_to 外键。",
+      "tags": [
+        "validation",
+        "pre-check",
+        "integrity",
+        "constraint"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "function",
+      "name": "checkPost",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        53,
+        66
+      ],
+      "summary": "执行后约束检查，仅处理 REQUIRE_HAS 类型规则，确保父实体拥有足够数量的关联子记录。",
+      "tags": [
+        "validation",
+        "post-check",
+        "require-has",
+        "constraint"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "type": "function",
+      "name": "checkBelongsToRefs",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        68,
+        82
+      ],
+      "summary": "遍历实体的 belongs_to 关系，对非 @ 引用且未在 VM 中 pending 的外键值执行数据库存在性检查。",
+      "tags": [
+        "ref-check",
+        "foreign-key",
+        "belongs-to",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "type": "file",
+      "name": "RefCheckRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "summary": "实现 ref_check 完整性规则，通过 JDBC 查询验证指定字段引用的目标实体记录在数据库中是否存在。",
+      "tags": [
+        "constraint",
+        "ref-check",
+        "validation",
+        "jdbc"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "class",
+      "name": "RefCheckRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        16,
+        48
+      ],
+      "summary": "引用完整性规则处理器，从 Rule 参数读取 entity/field 并在数据库中验证外键值。",
+      "tags": [
+        "constraint",
+        "ref-check",
+        "rule-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        23,
+        34
+      ],
+      "summary": "根据规则参数提取字段值，若不为空则调用 existsInDb 验证引用目标是否存在。",
+      "tags": [
+        "validation",
+        "ref-check",
+        "rule-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "function",
+      "name": "existsInDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        36,
+        47
+      ],
+      "summary": "执行 SELECT 1 查询判断指定实体表中 id 是否存在，供 ref_check 与 belongs_to 校验复用。",
+      "tags": [
+        "jdbc",
+        "existence-check",
+        "database",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "type": "file",
+      "name": "RequireHasRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "summary": "实现 require_has 完整性规则，在 INSERT/UPDATE 后检查父实体是否拥有满足最小数量要求的关联子记录。",
+      "tags": [
+        "constraint",
+        "require-has",
+        "validation",
+        "relation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "class",
+      "name": "RequireHasRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "lineRange": [
+        14,
+        42
+      ],
+      "summary": "require_has 规则处理器，依赖 VirtualMachine 获取父 ID 并统计数据库中关联记录数量。",
+      "tags": [
+        "constraint",
+        "require-has",
+        "rule-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "lineRange": [
+        21,
+        41
+      ],
+      "summary": "解析 relation 与 min 参数，获取父实体 ID 后通过 VM 统计关联记录数并与最小值比较。",
+      "tags": [
+        "validation",
+        "require-has",
+        "cardinality"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "type": "file",
+      "name": "StockCheckRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "summary": "实现 stock_check 完整性规则，解析 stock.X op item.Y 表达式并从数据库读取库存值与操作字段进行数值比较。",
+      "tags": [
+        "constraint",
+        "stock-check",
+        "validation",
+        "jdbc"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用正则表达式解析 stock/item 列比较表达式，支持 >=、<=、>、<、==、!= 六种运算符。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "class",
+      "name": "StockCheckRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "lineRange": [
+        20,
+        87
+      ],
+      "summary": "库存校验规则处理器，通过 via/fk 参数定位库存表记录并与当前操作字段值做 BigDecimal 比较。",
+      "tags": [
+        "constraint",
+        "stock-check",
+        "rule-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "lineRange": [
+        31,
+        86
+      ],
+      "summary": "解析规则表达式、查询库存列值、转换 item 字段为 BigDecimal 并按运算符判断是否满足约束。",
+      "tags": [
+        "validation",
+        "stock-check",
+        "bigdecimal",
+        "jdbc"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "file",
+      "name": "OpType.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "summary": "定义意图操作的三种类型枚举：INSERT、UPDATE、DELETE，供执行器与约束引擎按操作类型分派逻辑。",
+      "tags": [
+        "enum",
+        "intent",
+        "type-definition",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "file",
+      "name": "IntentError.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "summary": "不可变错误记录类型，封装操作 ID、实体名、规则名、字段与消息，供校验与约束层统一返回失败信息。",
+      "tags": [
+        "result",
+        "error",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:IntentError",
+      "type": "class",
+      "name": "IntentError",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "lineRange": [
+        3,
+        36
+      ],
+      "summary": "意图执行错误值对象，提供 of/field 静态工厂方法创建规则级或字段级错误实例。",
+      "tags": [
+        "error",
+        "value-object",
+        "result",
+        "immutable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "function",
+      "name": "of",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "lineRange": [
+        18,
+        20
+      ],
+      "summary": "创建不含字段信息的规则级 IntentError 实例，约束规则处理器的主要工厂方法。",
+      "tags": [
+        "factory",
+        "error",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:field",
+      "type": "function",
+      "name": "field",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "lineRange": [
+        22,
+        24
+      ],
+      "summary": "创建字段级 IntentError，rule 固定为 field，用于字段校验失败场景。",
+      "tags": [
+        "factory",
+        "error",
+        "field-validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "file",
+      "name": "EntityDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "summary": "实体 schema 定义，聚合表名、字段映射、关系映射与完整性规则，是引擎运行时解析 YAML schema 的核心数据结构。",
+      "tags": [
+        "schema",
+        "data-model",
+        "entity",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "class",
+      "name": "EntityDef",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "lineRange": [
+        7,
+        38
+      ],
+      "summary": "不可变实体定义 record-like 类，提供 primaryKey 查找与按名称获取 RelationDef 的便捷方法。",
+      "tags": [
+        "schema",
+        "entity",
+        "immutable",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "file",
+      "name": "RelationDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "summary": "实体间关系定义，描述 belongs_to/has_many/has_one 三种关系类型、目标实体与外键字段名。",
+      "tags": [
+        "schema",
+        "relation",
+        "data-model",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:RelationDef",
+      "type": "class",
+      "name": "RelationDef",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "lineRange": [
+        3,
+        31
+      ],
+      "summary": "关系定义值对象，内嵌 Kind 枚举并提供 parseKind 将 YAML 字符串解析为枚举常量。",
+      "tags": [
+        "schema",
+        "relation",
+        "immutable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:parseKind",
+      "type": "function",
+      "name": "parseKind",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "lineRange": [
+        23,
+        30
+      ],
+      "summary": "将 belongs_to/has_many/has_one 字符串（不区分大小写）解析为 RelationDef.Kind 枚举值。",
+      "tags": [
+        "parser",
+        "schema",
+        "relation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "file",
+      "name": "Rule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "summary": "完整性规则定义，包含规则类型（require_has/stock_check/ref_check/expression）、参数字典与可选自定义消息。",
+      "tags": [
+        "schema",
+        "rule",
+        "integrity",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/Rule.java:Rule",
+      "type": "class",
+      "name": "Rule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "lineRange": [
+        5,
+        28
+      ],
+      "summary": "不可变规则值对象，Type 枚举标识规则种类，param 方法按 key 读取参数值。",
+      "tags": [
+        "schema",
+        "rule",
+        "integrity",
+        "immutable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "file",
+      "name": "SchemaRegistry.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "summary": "Schema 注册表，持有所有 EntityDef 并提供 find/require 查询及预构建的 RelationGraph 访问入口。",
+      "tags": [
+        "schema",
+        "registry",
+        "singleton",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "class",
+      "name": "SchemaRegistry",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "lineRange": [
+        8,
+        40
+      ],
+      "summary": "实体定义索引与关系图容器，构造时自动构建 RelationGraph 供拓扑排序与查询使用。",
+      "tags": [
+        "schema",
+        "registry",
+        "index"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "function",
+      "name": "require",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "lineRange": [
+        25,
+        31
+      ],
+      "summary": "按名称获取 EntityDef，不存在时抛出 IllegalArgumentException，是引擎各模块的主要 schema 访问方法。",
+      "tags": [
+        "lookup",
+        "schema",
+        "registry"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "file",
+      "name": "VirtualMachine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "summary": "意图执行虚拟机，维护 pending 操作行缓存并提供关联记录计数与数据库存在性检查等辅助能力。",
+      "tags": [
+        "vm",
+        "execution",
+        "pending-state",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "class",
+      "name": "VirtualMachine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        16,
+        83
+      ],
+      "summary": "管理 LinkedHashMap 形式的 pending 行注册表，支持跨操作引用解析与关联 cardinality 统计。",
+      "tags": [
+        "vm",
+        "state",
+        "execution",
+        "pending-rows"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:get",
+      "type": "function",
+      "name": "get",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        28,
+        30
+      ],
+      "summary": "按 opName 从 pending 注册表获取 PendingRow，供 ReferenceResolver 解析 @ 引用。",
+      "tags": [
+        "vm",
+        "lookup",
+        "reference",
+        "pending-rows"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:has",
+      "type": "function",
+      "name": "has",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        32,
+        34
+      ],
+      "summary": "判断指定 opName 是否已在 pending 注册表中，用于跳过对同批次 @ 引用的数据库存在性检查。",
+      "tags": [
+        "vm",
+        "lookup",
+        "reference"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedPending",
+      "type": "function",
+      "name": "countRelatedPending",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        36,
+        53
+      ],
+      "summary": "统计 pending 队列中指向指定父实体 ID 的 has_many/has_one 关联子记录数量。",
+      "tags": [
+        "vm",
+        "count",
+        "relation",
+        "pending"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "function",
+      "name": "countRelatedDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        55,
+        69
+      ],
+      "summary": "通过 JDBC COUNT 查询数据库中满足父实体关联条件的子记录数量，供 require_has 规则使用。",
+      "tags": [
+        "jdbc",
+        "count",
+        "relation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:existsInDb",
+      "type": "function",
+      "name": "existsInDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        71,
+        82
+      ],
+      "summary": "通过 DataSource 获取连接并执行 SELECT 1 判断实体记录是否存在。",
+      "tags": [
+        "jdbc",
+        "existence-check",
+        "database"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "file",
+      "name": "SchemaEngine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "summary": "Intentio 引擎的核心门面类，负责加载 YAML 模式、编排校验、拓扑排序、引用解析、约束检查与 JDBC 事务执行，并提供查询入口。",
+      "tags": [
+        "entry-point",
+        "service",
+        "orchestration",
+        "transaction",
+        "api-handler",
+        "tested"
+      ],
+      "complexity": "complex",
+      "languageNotes": "通过工厂方法 load/loadClasspath 构建实例，execute 在单事务中协调 VM、约束引擎与 Executor。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "class",
+      "name": "SchemaEngine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        30,
+        137
+      ],
+      "summary": "引擎主类，持有 SchemaRegistry、Validator、Executor 与 QueryExecutor，对外暴露 execute 与 query 能力。",
+      "tags": [
+        "service",
+        "orchestration",
+        "singleton",
+        "entry-point"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:load",
+      "type": "function",
+      "name": "load",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        48,
+        51
+      ],
+      "summary": "从文件系统目录加载 YAML 模式并创建 SchemaEngine 实例。",
+      "tags": [
+        "factory",
+        "bootstrap",
+        "schema-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:loadClasspath",
+      "type": "function",
+      "name": "loadClasspath",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        53,
+        56
+      ],
+      "summary": "从 classpath 资源目录加载模式并创建 SchemaEngine 实例。",
+      "tags": [
+        "factory",
+        "bootstrap",
+        "schema-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "function",
+      "name": "execute",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        60,
+        128
+      ],
+      "summary": "执行 IntentGroup：先校验字段，再拓扑排序，在事务内解析引用、执行前置/后置约束检查并调用 Executor 落库。",
+      "tags": [
+        "orchestration",
+        "transaction",
+        "event-handler",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "function",
+      "name": "query",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        130,
+        136
+      ],
+      "summary": "根据 QueryIntent 获取 JDBC 连接并委托 QueryExecutor 执行查询。",
+      "tags": [
+        "api-handler",
+        "query",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "file",
+      "name": "IntentGroup.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "summary": "封装一批 Op 操作的不可变容器，提供工厂方法并为未命名操作自动分配默认名称。",
+      "tags": [
+        "data-model",
+        "intent",
+        "factory",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:IntentGroup",
+      "type": "class",
+      "name": "IntentGroup",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "lineRange": [
+        7,
+        27
+      ],
+      "summary": "记录 Op 列表的 record 类型，of 工厂在构造前调用 assignDefaultName 补全操作名。",
+      "tags": [
+        "data-model",
+        "intent",
+        "immutable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:of",
+      "type": "function",
+      "name": "of",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "lineRange": [
+        18,
+        24
+      ],
+      "summary": "从 Op 列表创建 IntentGroup，并为每个操作分配默认名称。",
+      "tags": [
+        "factory",
+        "intent",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "file",
+      "name": "QueryIntent.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "summary": "描述只读查询意图：根实体、关联 include 路径、过滤条件及分页参数，采用流畅 API 构建。",
+      "tags": [
+        "data-model",
+        "query",
+        "fluent-api",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "class",
+      "name": "QueryIntent",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "lineRange": [
+        8,
+        41
+      ],
+      "summary": "可变查询描述对象，支持 from/include/filter/limit/offset 链式配置。",
+      "tags": [
+        "data-model",
+        "query",
+        "fluent-api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "file",
+      "name": "QueryExecutor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "summary": "根据 QueryIntent 与 SchemaRegistry 动态生成 JOIN SQL，执行查询并将扁平结果折叠为嵌套 Map 结构。",
+      "tags": [
+        "query",
+        "service",
+        "sql-generation",
+        "data-pipeline"
+      ],
+      "complexity": "complex",
+      "languageNotes": "利用 RelationGraph 规划多跳关联 JOIN，foldRow 按路径组装一对多嵌套结构。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "class",
+      "name": "QueryExecutor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        22,
+        192
+      ],
+      "summary": "查询执行器，持有 SchemaRegistry，负责 SQL 拼装、参数绑定与结果折叠。",
+      "tags": [
+        "query",
+        "service",
+        "sql-generation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "function",
+      "name": "run",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        30,
+        82
+      ],
+      "summary": "根据意图规划 JOIN、拼接 SELECT/WHERE/ORDER/LIMIT，执行 JDBC 查询并返回 QueryResult。",
+      "tags": [
+        "query",
+        "sql-generation",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "function",
+      "name": "foldRow",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        84,
+        119
+      ],
+      "summary": "将单行 JDBC 结果按列投影路径折叠进根行 Map，处理一对多关联的列表嵌套。",
+      "tags": [
+        "serialization",
+        "data-pipeline",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "function",
+      "name": "locate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        121,
+        137
+      ],
+      "summary": "沿点分路径在嵌套 Map 结构中定位父节点，用于挂载关联子记录。",
+      "tags": [
+        "utility",
+        "navigation",
+        "data-structure"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "function",
+      "name": "planJoins",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        139,
+        169
+      ],
+      "summary": "解析 include 路径，借助 RelationGraph 生成有序 JoinNode 列表及表别名映射。",
+      "tags": [
+        "query",
+        "graph",
+        "planning"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "file",
+      "name": "IntentResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "summary": "意图执行结果封装，包含成功标志、各 Op 生成的主键映射以及错误列表。",
+      "tags": [
+        "data-model",
+        "result",
+        "api-contract",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:IntentResult",
+      "type": "class",
+      "name": "IntentResult",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "lineRange": [
+        7,
+        31
+      ],
+      "summary": "不可变执行结果 record，提供 success/failure 工厂与 generatedId 便捷访问。",
+      "tags": [
+        "data-model",
+        "result",
+        "immutable"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:success",
+      "type": "function",
+      "name": "success",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "lineRange": [
+        18,
+        20
+      ],
+      "summary": "构造成功结果，携带各操作生成的主键映射。",
+      "tags": [
+        "factory",
+        "result",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:failure",
+      "type": "function",
+      "name": "failure",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "lineRange": [
+        22,
+        24
+      ],
+      "summary": "构造失败结果，封装 IntentError 列表。",
+      "tags": [
+        "factory",
+        "result",
+        "error-handling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "file",
+      "name": "QueryResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "summary": "查询结果容器，包装行列表并提供 size 与 first 便捷方法。",
+      "tags": [
+        "data-model",
+        "result",
+        "query",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java:QueryResult",
+      "type": "class",
+      "name": "QueryResult",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "lineRange": [
+        6,
+        16
+      ],
+      "summary": "不可变查询结果 record，rows 为嵌套 Map 列表。",
+      "tags": [
+        "data-model",
+        "result",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "file",
+      "name": "RelationGraph.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "summary": "基于 JGraphT 构建实体关系有向图，支持按关系名路径解析多跳关联边序列。",
+      "tags": [
+        "schema-definition",
+        "graph",
+        "utility"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Edge record 携带 relationName、kind 与 fk，供查询 JOIN 规划使用。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "class",
+      "name": "RelationGraph",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        9,
+        89
+      ],
+      "summary": "关系图封装类，提供 build 从 SchemaRegistry 构图及 path 解析点分关系路径。",
+      "tags": [
+        "graph",
+        "schema-definition",
+        "data-structure"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "function",
+      "name": "build",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        47,
+        64
+      ],
+      "summary": "遍历所有 EntityDef 及其 relations，构建实体顶点与带元数据的边。",
+      "tags": [
+        "graph",
+        "factory",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "function",
+      "name": "path",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        68,
+        88
+      ],
+      "summary": "将点分关系路径解析为有序 Edge 列表，逐步匹配出边关系名。",
+      "tags": [
+        "graph",
+        "navigation",
+        "query"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "file",
+      "name": "SchemaLoader.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "summary": "从目录或 classpath 读取 YAML 模式文件，解析为 EntityDef 映射并构建 SchemaRegistry。",
+      "tags": [
+        "schema-definition",
+        "serialization",
+        "bootstrap",
+        "tested"
+      ],
+      "complexity": "complex",
+      "languageNotes": "使用 SnakeYAML 解析，camelToSnake 将实体名转为表名，mergeEntities 防止重复定义。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "class",
+      "name": "SchemaLoader",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        15,
+        220
+      ],
+      "summary": "模式加载器，包含 YAML 解析、字段/关系/完整性规则解析及实体合并逻辑。",
+      "tags": [
+        "schema-definition",
+        "bootstrap",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "function",
+      "name": "loadDirectory",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        19,
+        32
+      ],
+      "summary": "扫描目录下 YAML 文件，合并实体定义并返回 SchemaRegistry。",
+      "tags": [
+        "bootstrap",
+        "schema-definition",
+        "io"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "function",
+      "name": "loadClasspath",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        34,
+        60
+      ],
+      "summary": "从 classpath 资源目录枚举并加载 YAML 模式文件。",
+      "tags": [
+        "bootstrap",
+        "schema-definition",
+        "io"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "function",
+      "name": "parseYaml",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        70,
+        88
+      ],
+      "summary": "解析 YAML 输入流，提取 entities 段并转换为 EntityDef 映射。",
+      "tags": [
+        "serialization",
+        "parsing",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "type": "function",
+      "name": "parseEntity",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        90,
+        109
+      ],
+      "summary": "解析单个实体定义，包括字段、关系与完整性约束块。",
+      "tags": [
+        "parsing",
+        "schema-definition",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "type": "function",
+      "name": "parseField",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        111,
+        127
+      ],
+      "summary": "将 YAML 字段节点解析为 FieldDef，处理类型、约束与枚举值。",
+      "tags": [
+        "parsing",
+        "schema-definition",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseIntegrity",
+      "type": "function",
+      "name": "parseIntegrity",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        136,
+        156
+      ],
+      "summary": "解析完整性约束块，区分 onCreate/onUpdate/onDelete 与字段级规则。",
+      "tags": [
+        "parsing",
+        "validation",
+        "constraint"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseRuleList",
+      "type": "function",
+      "name": "parseRuleList",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        158,
+        190
+      ],
+      "summary": "将 YAML 规则节点列表或映射解析为 Rule 对象列表，支持多种规则形态。",
+      "tags": [
+        "parsing",
+        "validation",
+        "constraint"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:camelToSnake",
+      "type": "function",
+      "name": "camelToSnake",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        207,
+        219
+      ],
+      "summary": "将驼峰实体名转换为下划线表名。",
+      "tags": [
+        "utility",
+        "naming",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "type": "file",
+      "name": "PendingRow.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "summary": "虚拟机中待写入行的内存表示，持有实体名、字段映射及生成主键。",
+      "tags": [
+        "data-model",
+        "vm",
+        "staging"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "class",
+      "name": "PendingRow",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "lineRange": [
+        6,
+        29
+      ],
+      "summary": "待提交行 record，setGeneratedId 同步更新 fields 中的 id 字段。",
+      "tags": [
+        "data-model",
+        "vm",
+        "staging"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "file",
+      "name": "PrescriptionIntegrationTest.java",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "summary": "处方领域端到端集成测试，覆盖创建、约束拒绝、库存不足及嵌套 include 查询场景。",
+      "tags": [
+        "test",
+        "integration",
+        "prescription"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:PrescriptionIntegrationTest",
+      "type": "class",
+      "name": "PrescriptionIntegrationTest",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        29,
+        196
+      ],
+      "summary": "JUnit 集成测试类，使用 H2 数据源与 classpath 模式验证 SchemaEngine 完整流程。",
+      "tags": [
+        "test",
+        "integration",
+        "prescription"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:resetDb",
+      "type": "function",
+      "name": "resetDb",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        41,
+        54
+      ],
+      "summary": "从 schema.sql 重置 H2 表结构并插入种子数据。",
+      "tags": [
+        "test",
+        "database",
+        "fixture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:createsPrescriptionWithItems",
+      "type": "function",
+      "name": "createsPrescriptionWithItems",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        56,
+        87
+      ],
+      "summary": "验证成功创建处方及关联药品明细，并检查数据库行数与生成主键。",
+      "tags": [
+        "test",
+        "integration",
+        "prescription"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsPrescriptionWithoutItems",
+      "type": "function",
+      "name": "rejectsPrescriptionWithoutItems",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        89,
+        107
+      ],
+      "summary": "验证无明细处方被 requireHas 约束拒绝且不落库。",
+      "tags": [
+        "test",
+        "constraint",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsWhenStockInsufficient",
+      "type": "function",
+      "name": "rejectsWhenStockInsufficient",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        109,
+        135
+      ],
+      "summary": "验证库存不足时 stockCheck 规则拒绝执行并回滚事务。",
+      "tags": [
+        "test",
+        "constraint",
+        "stock"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:queryWithNestedInclude",
+      "type": "function",
+      "name": "queryWithNestedInclude",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        137,
+        167
+      ],
+      "summary": "验证 items.drug 嵌套 include 查询返回正确的层级嵌套结构。",
+      "tags": [
+        "test",
+        "query",
+        "integration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:buildDataSource",
+      "type": "function",
+      "name": "buildDataSource",
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "lineRange": [
+        169,
+        188
+      ],
+      "summary": "从 application.properties 构建 HikariCP 数据源，缺省使用内存 H2。",
+      "tags": [
+        "test",
+        "database",
+        "fixture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "type": "file",
+      "name": "Executor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "summary": "意图执行器，根据 Op 类型将已解析字段映射为 JDBC PreparedStatement，执行 INSERT/UPDATE/DELETE 并返回生成主键或目标 ID。",
+      "tags": [
+        "service",
+        "jdbc",
+        "crud",
+        "execution"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用 Java switch 表达式分发操作类型，bindParam 按 FieldType 绑定 SQL 参数。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "type": "file",
+      "name": "TopologySorter.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "summary": "对 IntentGroup 中的 Op 进行拓扑排序，依据字段值中的 @引用 构建依赖图，检测循环引用并返回安全执行顺序。",
+      "tags": [
+        "utility",
+        "topological-sort",
+        "dependency-graph",
+        "execution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "file",
+      "name": "Op.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "summary": "意图操作不可变记录，封装 INSERT/UPDATE/DELETE 类型、目标实体、字段映射、命名别名及目标 ID，提供静态工厂与链式 as 命名。",
+      "tags": [
+        "data-model",
+        "intent",
+        "factory",
+        "crud"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "file",
+      "name": "ReferenceParser.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "summary": "解析 Op 字段中的 @opName 或 @opName.field 引用语法，提供 isReference 检测与 parse 结构化提取。",
+      "tags": [
+        "utility",
+        "parser",
+        "reference",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "file",
+      "name": "FieldDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "summary": "实体字段 schema 定义，包含类型、必填、主键、自增、长度/精度/枚举值及默认值等元数据。",
+      "tags": [
+        "data-model",
+        "schema",
+        "field-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "file",
+      "name": "FieldType.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "summary": "字段类型枚举，定义 LONG/STRING/DECIMAL/DATE 等类型，并提供 parse 将 YAML 字符串映射为枚举值。",
+      "tags": [
+        "type-definition",
+        "schema",
+        "enum",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "file",
+      "name": "Validator.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "summary": "意图组校验器，按 schema 验证实体存在性、必填字段、引用顺序及各类 FieldType 值格式，收集 IntentError 列表。",
+      "tags": [
+        "validation",
+        "service",
+        "schema",
+        "intent"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "type": "file",
+      "name": "ReferenceResolver.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "summary": "引用解析器，遍历 Op 字段并将 @引用 替换为 VirtualMachine 中已注册 PendingRow 的实际字段值。",
+      "tags": [
+        "service",
+        "reference",
+        "virtual-machine",
+        "resolution"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "class",
+      "name": "Executor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        23,
+        112
+      ],
+      "summary": "持有 SchemaRegistry，将已解析的 Op 字段转换为 SQL 并经由 JDBC 执行。",
+      "tags": [
+        "service",
+        "jdbc",
+        "execution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "function",
+      "name": "execute",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        31,
+        37
+      ],
+      "summary": "按 OpType 分发至 doInsert/doUpdate/doDelete，返回生成主键或 targetId。",
+      "tags": [
+        "api-handler",
+        "execution",
+        "crud"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "function",
+      "name": "doInsert",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        39,
+        64
+      ],
+      "summary": "构建 INSERT 语句，应用 schema 默认值与自增主键剔除，绑定参数并返回生成键。",
+      "tags": [
+        "jdbc",
+        "insert",
+        "execution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "function",
+      "name": "doUpdate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        66,
+        77
+      ],
+      "summary": "构建 UPDATE SET 子句并按 FieldDef 类型绑定字段值与 WHERE id 参数。",
+      "tags": [
+        "jdbc",
+        "update",
+        "execution"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "function",
+      "name": "bindParam",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        88,
+        111
+      ],
+      "summary": "根据 FieldDef.type 将 Java 值转换为 PreparedStatement 参数，含 DECIMAL 与 DATE 特殊处理。",
+      "tags": [
+        "jdbc",
+        "serialization",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:TopologySorter",
+      "type": "class",
+      "name": "TopologySorter",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "lineRange": [
+        17,
+        67
+      ],
+      "summary": "工具类，基于 Kahn 算法对 Op 引用依赖进行拓扑排序。",
+      "tags": [
+        "utility",
+        "topological-sort",
+        "dependency-graph"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "function",
+      "name": "sort",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "lineRange": [
+        21,
+        66
+      ],
+      "summary": "扫描 Op 字段 @引用 构建 dependsOn/dependedBy 图，BFS 输出无环执行序列或抛出循环异常。",
+      "tags": [
+        "topological-sort",
+        "reference",
+        "execution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "class",
+      "name": "Op",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        6,
+        55
+      ],
+      "summary": "意图 CRUD 操作的核心数据载体，贯穿校验、排序、解析与执行全流程。",
+      "tags": [
+        "data-model",
+        "intent",
+        "crud"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:insert",
+      "type": "function",
+      "name": "insert",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        19,
+        21
+      ],
+      "summary": "创建 INSERT 类型 Op 的静态工厂方法。",
+      "tags": [
+        "factory",
+        "insert",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:update",
+      "type": "function",
+      "name": "update",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        23,
+        27
+      ],
+      "summary": "创建 UPDATE 类型 Op 并设置 targetId 的静态工厂方法。",
+      "tags": [
+        "factory",
+        "update",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:delete",
+      "type": "function",
+      "name": "delete",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        29,
+        33
+      ],
+      "summary": "创建 DELETE 类型 Op 并设置 targetId 的静态工厂方法。",
+      "tags": [
+        "factory",
+        "delete",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:as",
+      "type": "function",
+      "name": "as",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        35,
+        38
+      ],
+      "summary": "为 Op 指定命名别名，供 @引用 与拓扑排序使用。",
+      "tags": [
+        "intent",
+        "reference",
+        "fluent-api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "class",
+      "name": "ReferenceParser",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        6,
+        29
+      ],
+      "summary": "基于正则的 @引用 解析工具类，内含 Ref 记录类型。",
+      "tags": [
+        "utility",
+        "parser",
+        "reference"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "function",
+      "name": "isReference",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        16,
+        18
+      ],
+      "summary": "判断字段值是否为合法的 @opName[.field] 引用字符串。",
+      "tags": [
+        "validation",
+        "reference",
+        "parser"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "function",
+      "name": "parse",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        20,
+        28
+      ],
+      "summary": "将引用字符串解析为 Ref(opName, field)，缺省 field 为 id。",
+      "tags": [
+        "parser",
+        "reference",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java:FieldDef",
+      "type": "class",
+      "name": "FieldDef",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "lineRange": [
+        5,
+        42
+      ],
+      "summary": "不可变字段定义 record-like 类，供 schema 加载、校验与 JDBC 绑定共用。",
+      "tags": [
+        "data-model",
+        "schema",
+        "field-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java:FieldType",
+      "type": "class",
+      "name": "FieldType",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "lineRange": [
+        3,
+        27
+      ],
+      "summary": "schema 字段类型枚举，统一 YAML 别名与运行时类型判断。",
+      "tags": [
+        "type-definition",
+        "enum",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "class",
+      "name": "Validator",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        22,
+        177
+      ],
+      "summary": "持有 SchemaRegistry，对 IntentGroup 逐 Op 执行 schema 与引用顺序校验。",
+      "tags": [
+        "validation",
+        "service",
+        "schema"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "function",
+      "name": "validate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        29,
+        37
+      ],
+      "summary": "遍历 IntentGroup 中所有 Op，累积 earlierOpNames 并返回错误列表。",
+      "tags": [
+        "validation",
+        "api-handler",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "type": "function",
+      "name": "validateOne",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        39,
+        84
+      ],
+      "summary": "校验单个 Op 的实体、DELETE id、字段定义、@引用 顺序及 INSERT 必填字段。",
+      "tags": [
+        "validation",
+        "reference",
+        "schema"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "type": "function",
+      "name": "validateValue",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        86,
+        157
+      ],
+      "summary": "按 FieldType 校验字段值格式，含长度、精度、日期、布尔与枚举约束。",
+      "tags": [
+        "validation",
+        "type-check",
+        "schema"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "function",
+      "name": "toBigDecimal",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        168,
+        176
+      ],
+      "summary": "将 Number/BigDecimal/字符串安全转换为 BigDecimal，失败返回 null。",
+      "tags": [
+        "utility",
+        "serialization",
+        "decimal"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "class",
+      "name": "ReferenceResolver",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "lineRange": [
+        9,
+        39
+      ],
+      "summary": "绑定 VirtualMachine，在 Op 执行前将字段中的 @引用 替换为实际值。",
+      "tags": [
+        "service",
+        "reference",
+        "virtual-machine"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolve",
+      "type": "function",
+      "name": "resolve",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "lineRange": [
+        17,
+        23
+      ],
+      "summary": "解析 Op 全部字段，返回不含 @引用 的 LinkedHashMap。",
+      "tags": [
+        "reference",
+        "resolution",
+        "intent"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "function",
+      "name": "resolveValue",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "lineRange": [
+        25,
+        38
+      ],
+      "summary": "递归解析单个字段值，从 VirtualMachine 取 PendingRow 并提取指定 field。",
+      "tags": [
+        "reference",
+        "resolution",
+        "virtual-machine"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.claude/settings.local.json",
+      "type": "config",
+      "name": "settings.local.json",
+      "filePath": ".claude/settings.local.json",
+      "summary": "Claude Code 本地权限配置，允许执行 Maven 构建、测试与依赖解析等 Bash 命令。",
+      "tags": [
+        "configuration",
+        "development",
+        "build-system",
+        "permissions"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.cursor/settings.json",
+      "type": "config",
+      "name": "settings.json",
+      "filePath": ".cursor/settings.json",
+      "summary": "Cursor IDE 插件配置，启用 Understand-Anything 知识图谱分析插件。",
+      "tags": [
+        "configuration",
+        "development",
+        "documentation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.understand-anything/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "Understand-Anything 分析排除规则文件，语法与 .gitignore 相同，用于跳过测试产物与构建目录。",
+      "tags": [
+        "configuration",
+        "documentation",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.understand-anything/config.json",
+      "type": "config",
+      "name": "config.json",
+      "filePath": ".understand-anything/config.json",
+      "summary": "Understand-Anything 项目级配置，指定知识图谱与文档输出语言为中文。",
+      "tags": [
+        "configuration",
+        "documentation",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "engine-core/pom.xml",
+      "summary": "engine-core 模块 Maven 配置，声明 SnakeYAML、JGraphT、jOOQ 等核心依赖及 JUnit/H2 测试依赖。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "file",
+      "name": "IntegrityDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "summary": "定义实体完整性约束的数据模型，封装创建/更新/删除生命周期规则及字段级校验规则。",
+      "tags": [
+        "data-model",
+        "validation",
+        "schema"
+      ],
+      "complexity": "simple",
+      "languageNotes": "不可变值对象，构造时对 List/Map 做防御性拷贝。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "class",
+      "name": "IntegrityDef",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "lineRange": [
+        6,
+        27
+      ],
+      "summary": "实体完整性定义类，按 CRUD 生命周期与字段维度组织 Rule 规则集合，并提供 empty() 空实例工厂。",
+      "tags": [
+        "data-model",
+        "validation",
+        "schema"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "file",
+      "name": "SchemaLoaderTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "summary": "SchemaLoader 单元测试，验证 YAML 实体定义的文件加载、字段/关系/完整性规则解析及关系图构建。",
+      "tags": [
+        "test",
+        "schema",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "class",
+      "name": "SchemaLoaderTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        10,
+        94
+      ],
+      "summary": "JUnit 5 测试类，通过 test-schema 目录下的 YAML 样例全面覆盖 SchemaLoader 解析能力。",
+      "tags": [
+        "test",
+        "schema",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:loadsAllEntities",
+      "type": "function",
+      "name": "loadsAllEntities",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        16,
+        23
+      ],
+      "summary": "断言 SchemaLoader 能从目录加载 Prescription、PrescriptionItem、Drug、DrugStock 四个实体。",
+      "tags": [
+        "test",
+        "schema",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "function",
+      "name": "parsesFieldsCorrectly",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        25,
+        49
+      ],
+      "summary": "验证主键、枚举、精度/标度、默认值等字段元数据的 YAML 解析结果。",
+      "tags": [
+        "test",
+        "schema",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "function",
+      "name": "parsesRelations",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        51,
+        62
+      ],
+      "summary": "验证 has_many 与 belongs_to 关系类型、目标实体及外键字段的解析。",
+      "tags": [
+        "test",
+        "schema",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "function",
+      "name": "parsesIntegrityRules",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        64,
+        83
+      ],
+      "summary": "验证 require_has、stock_check 及字段级 rule 完整性约束的解析与 IntegrityDef 映射。",
+      "tags": [
+        "test",
+        "validation",
+        "schema"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "schema",
+      "name": "drug.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "summary": "测试用 YAML 模式文件，定义 Drug 药品实体与 DrugStock 库存实体及其关联关系。",
+      "tags": [
+        "schema-definition",
+        "api-schema",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/drug.yml:Drug",
+      "type": "schema",
+      "name": "Drug",
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "summary": "药品实体，包含名称、单位与中西药分类枚举字段，映射 drug 表。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/drug.yml:DrugStock",
+      "type": "schema",
+      "name": "DrugStock",
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "summary": "药品库存实体，关联 Drug 并含 quantity 字段的非负完整性约束。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "type": "schema",
+      "name": "prescription.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "summary": "测试用 YAML 模式文件，定义 Prescription 处方与 PrescriptionItem 明细实体及完整性规则。",
+      "tags": [
+        "schema-definition",
+        "api-schema",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/prescription.yml:Prescription",
+      "type": "schema",
+      "name": "Prescription",
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "summary": "处方实体，含患者信息与状态枚举，创建时要求至少一条 items 明细。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-core/src/test/resources/test-schema/prescription.yml:PrescriptionItem",
+      "type": "schema",
+      "name": "PrescriptionItem",
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "summary": "处方明细实体，关联 Drug 并在创建时执行 DrugStock 库存校验。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-example/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "engine-example/pom.xml",
+      "summary": "engine-example 示例模块 Maven 配置，依赖 engine-core 及 HikariCP、MySQL 连接池。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "type": "schema",
+      "name": "drug.yml",
+      "filePath": "engine-example/src/main/resources/schema/drug.yml",
+      "summary": "示例应用运行时 YAML 模式，定义 Drug 与 DrugStock 实体（与测试模式内容一致）。",
+      "tags": [
+        "schema-definition",
+        "api-schema",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/drug.yml:Drug",
+      "type": "schema",
+      "name": "Drug",
+      "filePath": "engine-example/src/main/resources/schema/drug.yml",
+      "summary": "示例模块药品实体定义，供 SchemaEngine 通过 classpath 加载。",
+      "tags": [
+        "schema-definition",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/drug.yml:DrugStock",
+      "type": "schema",
+      "name": "DrugStock",
+      "filePath": "engine-example/src/main/resources/schema/drug.yml",
+      "summary": "示例模块库存实体定义，含 quantity 非负字段规则。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "type": "schema",
+      "name": "prescription.yml",
+      "filePath": "engine-example/src/main/resources/schema/prescription.yml",
+      "summary": "示例应用运行时 YAML 模式，定义 Prescription 与 PrescriptionItem 实体及业务完整性规则。",
+      "tags": [
+        "schema-definition",
+        "api-schema",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/prescription.yml:Prescription",
+      "type": "schema",
+      "name": "Prescription",
+      "filePath": "engine-example/src/main/resources/schema/prescription.yml",
+      "summary": "示例模块处方实体，创建时强制 require_has items 约束。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "schema:engine-example/src/main/resources/schema/prescription.yml:PrescriptionItem",
+      "type": "schema",
+      "name": "PrescriptionItem",
+      "filePath": "engine-example/src/main/resources/schema/prescription.yml",
+      "summary": "示例模块处方明细实体，创建时通过 DrugStock 执行库存充足性校验。",
+      "tags": [
+        "schema-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "pom.xml",
+      "summary": "Intentio 多模块 Maven 父 POM，聚合 engine-core 与 engine-example，统一管理依赖版本与编译插件。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "packaging 为 pom，通过 dependencyManagement 集中声明 SnakeYAML、jOOQ、JUnit 等版本。"
+    },
+    {
+      "id": "config:engine-example/src/test/resources/application.properties",
+      "type": "config",
+      "name": "application.properties",
+      "filePath": "engine-example/src/test/resources/application.properties",
+      "summary": "为 engine-example 集成测试提供 MySQL JDBC 连接配置（jdbc.url、jdbc.user、jdbc.password）；当 url 为空或未配置时，PrescriptionIntegrationTest 自动回退到 H2 内存数据库。",
+      "tags": [
+        "configuration",
+        "test",
+        "jdbc",
+        "mysql",
+        "integration-test"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Properties 键值对格式；注释说明 MySQL 与 H2 切换方式，当前已启用指向 localhost:13306/intentio 的 MySQL 连接。"
+    },
+    {
+      "id": "config:engine-example/src/test/resources/logback-test.xml",
+      "type": "config",
+      "name": "logback-test.xml",
+      "filePath": "engine-example/src/test/resources/logback-test.xml",
+      "summary": "集成测试专用 Logback 配置，通过 STDOUT 控制台输出日志，根级别为 INFO，com.intentio 包设为 DEBUG 以便调试引擎行为。",
+      "tags": [
+        "configuration",
+        "logging",
+        "test",
+        "logback"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-example/src/test/resources/schema.sql",
+      "type": "file",
+      "name": "schema.sql",
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "summary": "集成测试数据库 DDL 脚本，定义 drug、drug_stock、prescription、prescription_item 四张表；PrescriptionIntegrationTest 在每次 @BeforeEach 中执行以重建测试数据环境。",
+      "tags": [
+        "database",
+        "ddl",
+        "test",
+        "integration-test",
+        "migration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-example/src/test/resources/schema.sql:drug",
+      "type": "table",
+      "name": "drug",
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "lineRange": [
+        6,
+        12
+      ],
+      "summary": "药品主表，存储药品名称、计量单位与分类（如 chinese），主键 id 自增。",
+      "tags": [
+        "database",
+        "data-model",
+        "entity",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-example/src/test/resources/schema.sql:drug_stock",
+      "type": "table",
+      "name": "drug_stock",
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "lineRange": [
+        14,
+        19
+      ],
+      "summary": "药品库存表，通过 drug_id 关联药品并记录 DECIMAL 精度库存数量。",
+      "tags": [
+        "database",
+        "data-model",
+        "inventory",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-example/src/test/resources/schema.sql:prescription",
+      "type": "table",
+      "name": "prescription",
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "lineRange": [
+        21,
+        28
+      ],
+      "summary": "处方主表，记录诊所 ID、患者姓名、开具日期与状态（默认 draft）。",
+      "tags": [
+        "database",
+        "data-model",
+        "entity",
+        "test"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-example/src/test/resources/schema.sql:prescription_item",
+      "type": "table",
+      "name": "prescription_item",
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "lineRange": [
+        30,
+        37
+      ],
+      "summary": "处方明细表，关联 prescription_id 与 drug_id，记录用量 weight 与单价 unit_price。",
+      "tags": [
+        "database",
+        "data-model",
+        "entity",
+        "test"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:IntentError",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:field",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:IntentError",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:field",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:RelationDef",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:parseKind",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:RelationDef",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:parseKind",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/Rule.java:Rule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/Rule.java:Rule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:has",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedPending",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:existsInDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:has",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:existsInDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:has",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedPending",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:load",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:loadClasspath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:load",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:loadClasspath",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:load",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:loadClasspath",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:success",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:failure",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:IntentGroup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:of",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:of",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:IntentGroup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java:QueryResult",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:IntentResult",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:success",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:failure",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:success",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:failure",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java:IntentResult",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java:QueryResult",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java:QueryResult",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:RelationDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseIntegrity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseRuleList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:camelToSnake",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseIntegrity",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java:FieldDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java:FieldType",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java:RelationDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseIntegrity",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseIntegrity",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/Rule.java:Rule",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:camelToSnake",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "class:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:PrescriptionIntegrationTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:resetDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:createsPrescriptionWithItems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsPrescriptionWithoutItems",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsWhenStockInsufficient",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:queryWithNestedInclude",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:buildDataSource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:createsPrescriptionWithItems",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:createsPrescriptionWithItems",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:createsPrescriptionWithItems",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsPrescriptionWithoutItems",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:rejectsWhenStockInsufficient",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:queryWithNestedInclude",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:queryWithNestedInclude",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java:queryWithNestedInclude",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:TopologySorter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:as",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:insert",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:update",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:delete",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/Op.java:as",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java:FieldDef",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java:FieldDef",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java:FieldType",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolve",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolve",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/result/IntentError.java:field",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolve",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:pom.xml",
+      "target": "config:engine-core/pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:pom.xml",
+      "target": "config:engine-example/pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/pom.xml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/pom.xml",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-example/pom.xml",
+      "target": "config:engine-core/pom.xml",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-example/pom.xml",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-example/pom.xml",
+      "target": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:.claude/settings.local.json",
+      "target": "config:pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:.cursor/settings.json",
+      "target": "config:.understand-anything/config.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:.understand-anything/config.json",
+      "target": "file:.understand-anything/.understandignore",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:loadsAllEntities",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:loadsAllEntities",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml:Drug",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml:DrugStock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "schema:engine-core/src/test/resources/test-schema/prescription.yml:Prescription",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "schema:engine-core/src/test/resources/test-schema/prescription.yml:PrescriptionItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/drug.yml:DrugStock",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml:Drug",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml:Prescription",
+      "target": "schema:engine-core/src/test/resources/test-schema/prescription.yml:PrescriptionItem",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml:PrescriptionItem",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml:Drug",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-core/src/test/resources/test-schema/prescription.yml:PrescriptionItem",
+      "target": "schema:engine-core/src/test/resources/test-schema/drug.yml:DrugStock",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml:Drug",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml:DrugStock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "target": "schema:engine-example/src/main/resources/schema/prescription.yml:Prescription",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "target": "schema:engine-example/src/main/resources/schema/prescription.yml:PrescriptionItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/drug.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/drug.yml:DrugStock",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml:Drug",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml:Prescription",
+      "target": "schema:engine-example/src/main/resources/schema/prescription.yml:PrescriptionItem",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml:PrescriptionItem",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml:Drug",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "schema:engine-example/src/main/resources/schema/prescription.yml:PrescriptionItem",
+      "target": "schema:engine-example/src/main/resources/schema/drug.yml:DrugStock",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java:EntityDef",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java:IntegrityDef",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:get",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:get",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:engine-example/src/test/resources/application.properties",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-example/src/test/resources/logback-test.xml",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:drug",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:drug_stock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:prescription",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:prescription_item",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:drug",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:drug_stock",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:prescription",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "table:engine-example/src/test/resources/schema.sql:prescription_item",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-example/src/test/resources/schema.sql",
+      "target": "file:engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ]
+}

@@ -1,0 +1,4075 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "d83b44a6d00ea6343400f9f9038d80370f2c5de4",
+  "generatedAt": "2026-06-10T18:13:35.969Z",
+  "files": {
+    ".claude/settings.local.json": {
+      "filePath": ".claude/settings.local.json",
+      "contentHash": "cd16bea26e17ded69c67cfcdf1169c6bd05347d462325dfcec26297b93bc18e3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    ".cursor/settings.json": {
+      "filePath": ".cursor/settings.json",
+      "contentHash": "680ab3cfdad1093427d65e9feebf1c3e8eeca160cbcfedd2c2085ba77965265e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "882d49a3f6397d5697ab1118f7530f6442fa49fc0242493a3e8c769adb9263ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/config.json": {
+      "filePath": ".understand-anything/config.json",
+      "contentHash": "5d2ff006cff22c68edd4776249d562ea8c73915a61c6214eb85933865a9402e7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/pom.xml": {
+      "filePath": "engine-core/pom.xml",
+      "contentHash": "e00726e50f9d291b11e7f278dea0e2807f60f66b4498c9b1108c73048754b602",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "contentHash": "257e7d6fe7286acf4db10cf8d98e4cd422e07c087cc724afd8159ef80ff2a472",
+      "functions": [
+        {
+          "name": "ConstraintEngine",
+          "params": [
+            "registry",
+            "vm"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "checkPre",
+          "params": [
+            "op",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "checkPost",
+          "params": [
+            "op",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "checkBelongsToRefs",
+          "params": [
+            "op",
+            "fields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "extractOpName",
+          "params": [
+            "op",
+            "fk"
+          ],
+          "returnType": "String",
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "ConstraintEngine",
+          "methods": [
+            "ConstraintEngine",
+            "checkPre",
+            "checkPost",
+            "checkBelongsToRefs",
+            "extractOpName"
+          ],
+          "properties": [
+            "registry",
+            "vm",
+            "requireHas",
+            "stockCheck",
+            "refCheck"
+          ],
+          "exported": true,
+          "lineCount": 76
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.OpType",
+          "specifiers": [
+            "OpType"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.Rule",
+          "specifiers": [
+            "Rule"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.vm.VirtualMachine",
+          "specifiers": [
+            "VirtualMachine"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "ConstraintEngine",
+        "checkPre",
+        "checkPost",
+        "ConstraintEngine"
+      ],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "contentHash": "95c5634b5f84f0b9733c1be647adf9de7fe68f18d2b8c88c43290bfcb97c733c",
+      "functions": [
+        {
+          "name": "RefCheckRule",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "check",
+          "params": [
+            "op",
+            "rule",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "existsInDb",
+          "params": [
+            "conn",
+            "entity",
+            "id"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [
+        {
+          "name": "RefCheckRule",
+          "methods": [
+            "RefCheckRule",
+            "check",
+            "existsInDb"
+          ],
+          "properties": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.Rule",
+          "specifiers": [
+            "Rule"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "RefCheckRule",
+        "check",
+        "existsInDb",
+        "RefCheckRule"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "contentHash": "d4004a229c290e211360326c513dd9c0dbd43eb2275e20457493db591f0769ba",
+      "functions": [
+        {
+          "name": "RequireHasRule",
+          "params": [
+            "registry",
+            "vm"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "check",
+          "params": [
+            "op",
+            "rule",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [
+        {
+          "name": "RequireHasRule",
+          "methods": [
+            "RequireHasRule",
+            "check"
+          ],
+          "properties": [
+            "vm"
+          ],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.OpType",
+          "specifiers": [
+            "OpType"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.Rule",
+          "specifiers": [
+            "Rule"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.vm.VirtualMachine",
+          "specifiers": [
+            "VirtualMachine"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "RequireHasRule",
+        "check",
+        "RequireHasRule"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "contentHash": "f5dbb915042e713dc424ce9432ee13916134b6292a43b3f493f643714246604b",
+      "functions": [
+        {
+          "name": "StockCheckRule",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "check",
+          "params": [
+            "op",
+            "rule",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Optional<IntentError>",
+          "exported": true,
+          "lineCount": 56
+        }
+      ],
+      "classes": [
+        {
+          "name": "StockCheckRule",
+          "methods": [
+            "StockCheckRule",
+            "check"
+          ],
+          "properties": [
+            "RULE",
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.Rule",
+          "specifiers": [
+            "Rule"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.validate.Validator",
+          "specifiers": [
+            "Validator"
+          ]
+        },
+        {
+          "source": "java.math.BigDecimal",
+          "specifiers": [
+            "BigDecimal"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        },
+        {
+          "source": "java.util.regex.Matcher",
+          "specifiers": [
+            "Matcher"
+          ]
+        },
+        {
+          "source": "java.util.regex.Pattern",
+          "specifiers": [
+            "Pattern"
+          ]
+        }
+      ],
+      "exports": [
+        "StockCheckRule",
+        "check",
+        "StockCheckRule"
+      ],
+      "totalLines": 88,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "contentHash": "7c9fa5d52f127aa4b5fd674e166e732624213f9c2b9289bf0fbd4de6f0331251",
+      "functions": [
+        {
+          "name": "Executor",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "execute",
+          "params": [
+            "op",
+            "resolvedFields",
+            "conn"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "doInsert",
+          "params": [
+            "op",
+            "fields",
+            "conn"
+          ],
+          "returnType": "Object",
+          "exported": false,
+          "lineCount": 26
+        },
+        {
+          "name": "doUpdate",
+          "params": [
+            "op",
+            "fields",
+            "conn"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "doDelete",
+          "params": [
+            "op",
+            "conn"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "bindParam",
+          "params": [
+            "ps",
+            "idx",
+            "value",
+            "def"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 24
+        }
+      ],
+      "classes": [
+        {
+          "name": "Executor",
+          "methods": [
+            "Executor",
+            "execute",
+            "doInsert",
+            "doUpdate",
+            "doDelete",
+            "bindParam"
+          ],
+          "properties": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 90
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.FieldDef",
+          "specifiers": [
+            "FieldDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.FieldType",
+          "specifiers": [
+            "FieldType"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.validate.Validator",
+          "specifiers": [
+            "Validator"
+          ]
+        },
+        {
+          "source": "java.math.BigDecimal",
+          "specifiers": [
+            "BigDecimal"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.sql.Statement",
+          "specifiers": [
+            "Statement"
+          ]
+        },
+        {
+          "source": "java.sql.Types",
+          "specifiers": [
+            "Types"
+          ]
+        },
+        {
+          "source": "java.time.LocalDate",
+          "specifiers": [
+            "LocalDate"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "Executor",
+        "execute",
+        "Executor"
+      ],
+      "totalLines": 113,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "contentHash": "014d1ce0ee2ad0bd79d2c780493e21cebf540c61de14281da01814739e9d62e5",
+      "functions": [
+        {
+          "name": "TopologySorter",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "sort",
+          "params": [
+            "group"
+          ],
+          "returnType": "List<Op>",
+          "exported": true,
+          "lineCount": 46
+        }
+      ],
+      "classes": [
+        {
+          "name": "TopologySorter",
+          "methods": [
+            "TopologySorter",
+            "sort"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 51
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.IntentGroup",
+          "specifiers": [
+            "IntentGroup"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.ReferenceParser",
+          "specifiers": [
+            "ReferenceParser"
+          ]
+        },
+        {
+          "source": "java.util.ArrayDeque",
+          "specifiers": [
+            "ArrayDeque"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.Deque",
+          "specifiers": [
+            "Deque"
+          ]
+        },
+        {
+          "source": "java.util.HashMap",
+          "specifiers": [
+            "HashMap"
+          ]
+        },
+        {
+          "source": "java.util.HashSet",
+          "specifiers": [
+            "HashSet"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Set",
+          "specifiers": [
+            "Set"
+          ]
+        }
+      ],
+      "exports": [
+        "sort",
+        "TopologySorter"
+      ],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "contentHash": "2665db7e37b0cfb567a47018e2d36d055b7dfc02aec56508438f6b88b3019a9b",
+      "functions": [
+        {
+          "name": "IntentGroup",
+          "params": [
+            "ops"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "of",
+          "params": [],
+          "returnType": "IntentGroup",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "of",
+          "params": [
+            "ops"
+          ],
+          "returnType": "IntentGroup",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "ops",
+          "params": [],
+          "returnType": "List<Op>",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "IntentGroup",
+          "methods": [
+            "IntentGroup",
+            "of",
+            "of",
+            "ops"
+          ],
+          "properties": [
+            "ops"
+          ],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.Arrays",
+          "specifiers": [
+            "Arrays"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        }
+      ],
+      "exports": [
+        "of",
+        "of",
+        "ops",
+        "IntentGroup"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/intent/Op.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "contentHash": "41a8bb57faa7da59fddc83ee16e0de732ee33592d5888c88e4b4af541e6e92fa",
+      "functions": [
+        {
+          "name": "Op",
+          "params": [
+            "type",
+            "entity",
+            "fields"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "insert",
+          "params": [
+            "entity",
+            "fields"
+          ],
+          "returnType": "Op",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "update",
+          "params": [
+            "entity",
+            "id",
+            "fields"
+          ],
+          "returnType": "Op",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "delete",
+          "params": [
+            "entity",
+            "id"
+          ],
+          "returnType": "Op",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "as",
+          "params": [
+            "name"
+          ],
+          "returnType": "Op",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "assignDefaultName",
+          "params": [
+            "index"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "type",
+          "params": [],
+          "returnType": "OpType",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "entity",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "fields",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "name",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "targetId",
+          "params": [],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "setField",
+          "params": [
+            "key",
+            "value"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "Op",
+          "methods": [
+            "Op",
+            "insert",
+            "update",
+            "delete",
+            "as",
+            "assignDefaultName",
+            "type",
+            "entity",
+            "fields",
+            "name",
+            "targetId",
+            "setField"
+          ],
+          "properties": [
+            "type",
+            "entity",
+            "fields",
+            "name",
+            "targetId"
+          ],
+          "exported": true,
+          "lineCount": 50
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "insert",
+        "update",
+        "delete",
+        "as",
+        "type",
+        "entity",
+        "fields",
+        "name",
+        "targetId",
+        "setField",
+        "Op"
+      ],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/intent/OpType.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "contentHash": "a86026ccf3d885fdf6d936cd6e9ca62031f81951bea5f567927090f42c71aa2c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "contentHash": "6297732116e2636a7eb0ac922d750fd0e5bf4e3a7c5ebfc7902b57e22aa97f14",
+      "functions": [
+        {
+          "name": "QueryIntent",
+          "params": [
+            "entity"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "from",
+          "params": [
+            "entity"
+          ],
+          "returnType": "QueryIntent",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "include",
+          "params": [],
+          "returnType": "QueryIntent",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "filter",
+          "params": [
+            "field",
+            "value"
+          ],
+          "returnType": "QueryIntent",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "limit",
+          "params": [
+            "limit"
+          ],
+          "returnType": "QueryIntent",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "offset",
+          "params": [
+            "offset"
+          ],
+          "returnType": "QueryIntent",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "entity",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "includes",
+          "params": [],
+          "returnType": "List<String>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "filters",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "limit",
+          "params": [],
+          "returnType": "Integer",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "offset",
+          "params": [],
+          "returnType": "Integer",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "QueryIntent",
+          "methods": [
+            "QueryIntent",
+            "from",
+            "include",
+            "filter",
+            "limit",
+            "offset",
+            "entity",
+            "includes",
+            "filters",
+            "limit",
+            "offset"
+          ],
+          "properties": [
+            "entity",
+            "includes",
+            "filters",
+            "limit",
+            "offset"
+          ],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "from",
+        "include",
+        "filter",
+        "limit",
+        "offset",
+        "entity",
+        "includes",
+        "filters",
+        "limit",
+        "offset",
+        "QueryIntent"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "contentHash": "aff8f3f6ec6c7f90dcd57bb25a1eed645c93c485c1709ddb48e4d3ef217509b6",
+      "functions": [
+        {
+          "name": "ReferenceParser",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "isReference",
+          "params": [
+            "value"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "parse",
+          "params": [
+            "value"
+          ],
+          "returnType": "Ref",
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "ReferenceParser",
+          "methods": [
+            "ReferenceParser",
+            "isReference",
+            "parse"
+          ],
+          "properties": [
+            "PATTERN"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.regex.Matcher",
+          "specifiers": [
+            "Matcher"
+          ]
+        },
+        {
+          "source": "java.util.regex.Pattern",
+          "specifiers": [
+            "Pattern"
+          ]
+        }
+      ],
+      "exports": [
+        "isReference",
+        "parse",
+        "ReferenceParser"
+      ],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "contentHash": "6a3236ff56f7d01631e30afdfdacb470bbdc66ca7a0d51d223f10616a37783bc",
+      "functions": [
+        {
+          "name": "QueryExecutor",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "run",
+          "params": [
+            "intent",
+            "conn"
+          ],
+          "returnType": "QueryResult",
+          "exported": true,
+          "lineCount": 53
+        },
+        {
+          "name": "foldRow",
+          "params": [
+            "rootRows",
+            "rs",
+            "md",
+            "projection",
+            "joinNodes"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 36
+        },
+        {
+          "name": "locate",
+          "params": [
+            "root",
+            "path"
+          ],
+          "returnType": "Map<String, Object>",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "planJoins",
+          "params": [
+            "intent"
+          ],
+          "returnType": "List<JoinNode>",
+          "exported": false,
+          "lineCount": 31
+        },
+        {
+          "name": "appendColumns",
+          "params": [
+            "projection",
+            "sql",
+            "entity",
+            "alias",
+            "path"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "QueryExecutor",
+          "methods": [
+            "QueryExecutor",
+            "run",
+            "foldRow",
+            "locate",
+            "planJoins",
+            "appendColumns"
+          ],
+          "properties": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 171
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.QueryIntent",
+          "specifiers": [
+            "QueryIntent"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.QueryResult",
+          "specifiers": [
+            "QueryResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.FieldDef",
+          "specifiers": [
+            "FieldDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.RelationDef",
+          "specifiers": [
+            "RelationDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.RelationGraph",
+          "specifiers": [
+            "RelationGraph"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSetMetaData",
+          "specifiers": [
+            "ResultSetMetaData"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Objects",
+          "specifiers": [
+            "Objects"
+          ]
+        }
+      ],
+      "exports": [
+        "QueryExecutor",
+        "run",
+        "QueryExecutor"
+      ],
+      "totalLines": 193,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/result/IntentError.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "contentHash": "296cff1e7a7a17e524a13874bfddd86f2f0ce725a8d414a44368f9f1c3fb2382",
+      "functions": [
+        {
+          "name": "IntentError",
+          "params": [
+            "opId",
+            "entity",
+            "rule",
+            "field",
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "of",
+          "params": [
+            "opId",
+            "entity",
+            "rule",
+            "message"
+          ],
+          "returnType": "IntentError",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "field",
+          "params": [
+            "opId",
+            "entity",
+            "field",
+            "message"
+          ],
+          "returnType": "IntentError",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "opId",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "entity",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "rule",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "field",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "message",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "toString",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "IntentError",
+          "methods": [
+            "IntentError",
+            "of",
+            "field",
+            "opId",
+            "entity",
+            "rule",
+            "field",
+            "message",
+            "toString"
+          ],
+          "properties": [
+            "opId",
+            "entity",
+            "rule",
+            "field",
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "IntentError",
+        "of",
+        "field",
+        "opId",
+        "entity",
+        "rule",
+        "field",
+        "message",
+        "toString",
+        "IntentError"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "contentHash": "47ed36bb745554b262fa0d64cfad37caad2988b56a6e9ec63bed08f3c3d144a7",
+      "functions": [
+        {
+          "name": "IntentResult",
+          "params": [
+            "ok",
+            "generatedIds",
+            "errors"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "success",
+          "params": [
+            "generatedIds"
+          ],
+          "returnType": "IntentResult",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "failure",
+          "params": [
+            "errors"
+          ],
+          "returnType": "IntentResult",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "ok",
+          "params": [],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "generatedIds",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "errors",
+          "params": [],
+          "returnType": "List<IntentError>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "generatedId",
+          "params": [
+            "opName"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "IntentResult",
+          "methods": [
+            "IntentResult",
+            "success",
+            "failure",
+            "ok",
+            "generatedIds",
+            "errors",
+            "generatedId"
+          ],
+          "properties": [
+            "ok",
+            "generatedIds",
+            "errors"
+          ],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "success",
+        "failure",
+        "ok",
+        "generatedIds",
+        "errors",
+        "generatedId",
+        "IntentResult"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "contentHash": "a0481acef87ab1543c8a9e0d8c838c361cdfa4b9c9c2b6dc330449d49e7cfddf",
+      "functions": [
+        {
+          "name": "QueryResult",
+          "params": [
+            "rows"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "rows",
+          "params": [],
+          "returnType": "List<Map<String, Object>>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "size",
+          "params": [],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "first",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "QueryResult",
+          "methods": [
+            "QueryResult",
+            "rows",
+            "size",
+            "first"
+          ],
+          "properties": [
+            "rows"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "QueryResult",
+        "rows",
+        "size",
+        "first",
+        "QueryResult"
+      ],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "contentHash": "71b4fd7a228d9e42853b1402f40b3b8f490abacc4f5803fb22e7382e37e05261",
+      "functions": [
+        {
+          "name": "EntityDef",
+          "params": [
+            "name",
+            "table",
+            "fields",
+            "relations",
+            "integrity"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "name",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "table",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "fields",
+          "params": [],
+          "returnType": "Map<String, FieldDef>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "relations",
+          "params": [],
+          "returnType": "Map<String, RelationDef>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "integrity",
+          "params": [],
+          "returnType": "IntegrityDef",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "primaryKey",
+          "params": [],
+          "returnType": "Optional<FieldDef>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "relation",
+          "params": [
+            "name"
+          ],
+          "returnType": "Optional<RelationDef>",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "EntityDef",
+          "methods": [
+            "EntityDef",
+            "name",
+            "table",
+            "fields",
+            "relations",
+            "integrity",
+            "primaryKey",
+            "relation"
+          ],
+          "properties": [
+            "name",
+            "table",
+            "fields",
+            "relations",
+            "integrity"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "EntityDef",
+        "name",
+        "table",
+        "fields",
+        "relations",
+        "integrity",
+        "primaryKey",
+        "relation",
+        "EntityDef"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "contentHash": "a310fb09d4f4f23b1a8a8c05149d68f5d9125c4dab6b060ea779056127ee17b0",
+      "functions": [
+        {
+          "name": "FieldDef",
+          "params": [
+            "name",
+            "type",
+            "required",
+            "pk",
+            "autoIncrement",
+            "length",
+            "precision",
+            "scale",
+            "enumValues",
+            "defaultValue"
+          ],
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "name",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "type",
+          "params": [],
+          "returnType": "FieldType",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "required",
+          "params": [],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "pk",
+          "params": [],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "autoIncrement",
+          "params": [],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "length",
+          "params": [],
+          "returnType": "Integer",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "precision",
+          "params": [],
+          "returnType": "Integer",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "scale",
+          "params": [],
+          "returnType": "Integer",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "enumValues",
+          "params": [],
+          "returnType": "List<String>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "defaultValue",
+          "params": [],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "FieldDef",
+          "methods": [
+            "FieldDef",
+            "name",
+            "type",
+            "required",
+            "pk",
+            "autoIncrement",
+            "length",
+            "precision",
+            "scale",
+            "enumValues",
+            "defaultValue"
+          ],
+          "properties": [
+            "name",
+            "type",
+            "required",
+            "pk",
+            "autoIncrement",
+            "length",
+            "precision",
+            "scale",
+            "enumValues",
+            "defaultValue"
+          ],
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        }
+      ],
+      "exports": [
+        "FieldDef",
+        "name",
+        "type",
+        "required",
+        "pk",
+        "autoIncrement",
+        "length",
+        "precision",
+        "scale",
+        "enumValues",
+        "defaultValue",
+        "FieldDef"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "contentHash": "9798f55906022fad4980bf51f0b07d33c24350fc9a595acb6f85bb4a60dad5b1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "contentHash": "e5bba39048cd2c53c6e9e6d838e03de2ceeab203b69b12f3c51e17b329631eb0",
+      "functions": [
+        {
+          "name": "IntegrityDef",
+          "params": [
+            "onCreate",
+            "onUpdate",
+            "onDelete",
+            "fieldRules"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "onCreate",
+          "params": [],
+          "returnType": "List<Rule>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "onUpdate",
+          "params": [],
+          "returnType": "List<Rule>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "onDelete",
+          "params": [],
+          "returnType": "List<Rule>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "fieldRules",
+          "params": [],
+          "returnType": "Map<String, Rule>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "empty",
+          "params": [],
+          "returnType": "IntegrityDef",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "IntegrityDef",
+          "methods": [
+            "IntegrityDef",
+            "onCreate",
+            "onUpdate",
+            "onDelete",
+            "fieldRules",
+            "empty"
+          ],
+          "properties": [
+            "onCreate",
+            "onUpdate",
+            "onDelete",
+            "fieldRules"
+          ],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "IntegrityDef",
+        "onCreate",
+        "onUpdate",
+        "onDelete",
+        "fieldRules",
+        "empty",
+        "IntegrityDef"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "contentHash": "d4ea2a6b3ff1cefe675ce833afcdc57874846e7aca0babd5b5daaaaa03c99608",
+      "functions": [
+        {
+          "name": "RelationDef",
+          "params": [
+            "name",
+            "kind",
+            "targetEntity",
+            "fk"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "name",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "kind",
+          "params": [],
+          "returnType": "Kind",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "targetEntity",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "fk",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "parseKind",
+          "params": [
+            "raw"
+          ],
+          "returnType": "Kind",
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [
+        {
+          "name": "RelationDef",
+          "methods": [
+            "RelationDef",
+            "name",
+            "kind",
+            "targetEntity",
+            "fk",
+            "parseKind"
+          ],
+          "properties": [
+            "name",
+            "kind",
+            "targetEntity",
+            "fk"
+          ],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "RelationDef",
+        "name",
+        "kind",
+        "targetEntity",
+        "fk",
+        "parseKind",
+        "RelationDef"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "contentHash": "cbe9bc3371e7826b0c93a6e1f66d73693ba81701038e2fcfeb81f6cebaa56302",
+      "functions": [
+        {
+          "name": "RelationGraph",
+          "params": [
+            "graph"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "build",
+          "params": [
+            "registry"
+          ],
+          "returnType": "RelationGraph",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "raw",
+          "params": [],
+          "returnType": "Graph<String, Edge>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "path",
+          "params": [
+            "fromEntity",
+            "relationPath"
+          ],
+          "returnType": "List<Edge>",
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [
+        {
+          "name": "RelationGraph",
+          "methods": [
+            "RelationGraph",
+            "build",
+            "raw",
+            "path"
+          ],
+          "properties": [
+            "graph"
+          ],
+          "exported": true,
+          "lineCount": 81
+        }
+      ],
+      "imports": [
+        {
+          "source": "org.jgrapht.Graph",
+          "specifiers": [
+            "Graph"
+          ]
+        },
+        {
+          "source": "org.jgrapht.graph.DefaultDirectedGraph",
+          "specifiers": [
+            "DefaultDirectedGraph"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Objects",
+          "specifiers": [
+            "Objects"
+          ]
+        }
+      ],
+      "exports": [
+        "build",
+        "raw",
+        "path",
+        "RelationGraph"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/Rule.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "contentHash": "08f715b0fcc0a797fd7e9158639b7ee34168dfc4f8ebfdc109d454a6bcf2c35d",
+      "functions": [
+        {
+          "name": "Rule",
+          "params": [
+            "type",
+            "params",
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "type",
+          "params": [],
+          "returnType": "Type",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "params",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "message",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "param",
+          "params": [
+            "key"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 1
+        }
+      ],
+      "classes": [
+        {
+          "name": "Rule",
+          "methods": [
+            "Rule",
+            "type",
+            "params",
+            "message",
+            "param"
+          ],
+          "properties": [
+            "type",
+            "params",
+            "message"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "Rule",
+        "type",
+        "params",
+        "message",
+        "param",
+        "Rule"
+      ],
+      "totalLines": 29,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "contentHash": "d231243b0f88c60b0692f02426b8f703e412fd1bfbd353e3e96d82c4f1344071",
+      "functions": [
+        {
+          "name": "SchemaLoader",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "loadDirectory",
+          "params": [
+            "dir"
+          ],
+          "returnType": "SchemaRegistry",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "loadClasspath",
+          "params": [
+            "classpathDir"
+          ],
+          "returnType": "SchemaRegistry",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "loadFile",
+          "params": [
+            "path"
+          ],
+          "returnType": "Map<String, EntityDef>",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "parseYaml",
+          "params": [
+            "in",
+            "source"
+          ],
+          "returnType": "Map<String, EntityDef>",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "parseEntity",
+          "params": [
+            "name",
+            "body",
+            "source"
+          ],
+          "returnType": "EntityDef",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "parseField",
+          "params": [
+            "name",
+            "body"
+          ],
+          "returnType": "FieldDef",
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "parseRelation",
+          "params": [
+            "name",
+            "body"
+          ],
+          "returnType": "RelationDef",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "parseIntegrity",
+          "params": [
+            "body"
+          ],
+          "returnType": "IntegrityDef",
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "parseRuleList",
+          "params": [
+            "node"
+          ],
+          "returnType": "List<Rule>",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "mergeEntities",
+          "params": [
+            "sink",
+            "incoming"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "toInt",
+          "params": [
+            "o"
+          ],
+          "returnType": "Integer",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "camelToSnake",
+          "params": [
+            "name"
+          ],
+          "returnType": "String",
+          "exported": false,
+          "lineCount": 13
+        }
+      ],
+      "classes": [
+        {
+          "name": "SchemaLoader",
+          "methods": [
+            "SchemaLoader",
+            "loadDirectory",
+            "loadClasspath",
+            "loadFile",
+            "parseYaml",
+            "parseEntity",
+            "parseField",
+            "parseRelation",
+            "parseIntegrity",
+            "parseRuleList",
+            "mergeEntities",
+            "toInt",
+            "camelToSnake"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 206
+        }
+      ],
+      "imports": [
+        {
+          "source": "org.yaml.snakeyaml.Yaml",
+          "specifiers": [
+            "Yaml"
+          ]
+        },
+        {
+          "source": "java.io.IOException",
+          "specifiers": [
+            "IOException"
+          ]
+        },
+        {
+          "source": "java.io.InputStream",
+          "specifiers": [
+            "InputStream"
+          ]
+        },
+        {
+          "source": "java.nio.file.Files",
+          "specifiers": [
+            "Files"
+          ]
+        },
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.stream.Stream",
+          "specifiers": [
+            "Stream"
+          ]
+        }
+      ],
+      "exports": [
+        "loadDirectory",
+        "loadClasspath",
+        "SchemaLoader"
+      ],
+      "totalLines": 221,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "contentHash": "a09ce879bd7b6605c73f3db74a5d458f93ee05a80497109a44faa2883790b4b5",
+      "functions": [
+        {
+          "name": "SchemaRegistry",
+          "params": [
+            "entities"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "of",
+          "params": [
+            "entities"
+          ],
+          "returnType": "SchemaRegistry",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "find",
+          "params": [
+            "name"
+          ],
+          "returnType": "Optional<EntityDef>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "require",
+          "params": [
+            "name"
+          ],
+          "returnType": "EntityDef",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "entities",
+          "params": [],
+          "returnType": "Collection<EntityDef>",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "relationGraph",
+          "params": [],
+          "returnType": "RelationGraph",
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [
+        {
+          "name": "SchemaRegistry",
+          "methods": [
+            "SchemaRegistry",
+            "of",
+            "find",
+            "require",
+            "entities",
+            "relationGraph"
+          ],
+          "properties": [
+            "entities",
+            "relationGraph"
+          ],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.Collection",
+          "specifiers": [
+            "Collection"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "of",
+        "find",
+        "require",
+        "entities",
+        "relationGraph",
+        "SchemaRegistry"
+      ],
+      "totalLines": 41,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "contentHash": "10716b20c65f8f0046af06a9b494df47204e632217f520301f8c13a09aa6bad3",
+      "functions": [
+        {
+          "name": "SchemaEngine",
+          "params": [
+            "registry",
+            "dataSource"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "load",
+          "params": [
+            "schemaDir",
+            "dataSource"
+          ],
+          "returnType": "SchemaEngine",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "loadClasspath",
+          "params": [
+            "classpathDir",
+            "dataSource"
+          ],
+          "returnType": "SchemaEngine",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "registry",
+          "params": [],
+          "returnType": "SchemaRegistry",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "execute",
+          "params": [
+            "group"
+          ],
+          "returnType": "IntentResult",
+          "exported": true,
+          "lineCount": 69
+        },
+        {
+          "name": "query",
+          "params": [
+            "intent"
+          ],
+          "returnType": "QueryResult",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [
+        {
+          "name": "SchemaEngine",
+          "methods": [
+            "SchemaEngine",
+            "load",
+            "loadClasspath",
+            "registry",
+            "execute",
+            "query"
+          ],
+          "properties": [
+            "log",
+            "registry",
+            "dataSource",
+            "validator",
+            "executor",
+            "queryExecutor"
+          ],
+          "exported": true,
+          "lineCount": 108
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.constraint.ConstraintEngine",
+          "specifiers": [
+            "ConstraintEngine"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.execute.Executor",
+          "specifiers": [
+            "Executor"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.execute.TopologySorter",
+          "specifiers": [
+            "TopologySorter"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.IntentGroup",
+          "specifiers": [
+            "IntentGroup"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.QueryIntent",
+          "specifiers": [
+            "QueryIntent"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.query.QueryExecutor",
+          "specifiers": [
+            "QueryExecutor"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentResult",
+          "specifiers": [
+            "IntentResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.QueryResult",
+          "specifiers": [
+            "QueryResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaLoader",
+          "specifiers": [
+            "SchemaLoader"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.validate.Validator",
+          "specifiers": [
+            "Validator"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.vm.PendingRow",
+          "specifiers": [
+            "PendingRow"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.vm.ReferenceResolver",
+          "specifiers": [
+            "ReferenceResolver"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.vm.VirtualMachine",
+          "specifiers": [
+            "VirtualMachine"
+          ]
+        },
+        {
+          "source": "org.slf4j.Logger",
+          "specifiers": [
+            "Logger"
+          ]
+        },
+        {
+          "source": "org.slf4j.LoggerFactory",
+          "specifiers": [
+            "LoggerFactory"
+          ]
+        },
+        {
+          "source": "javax.sql.DataSource",
+          "specifiers": [
+            "DataSource"
+          ]
+        },
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Optional",
+          "specifiers": [
+            "Optional"
+          ]
+        }
+      ],
+      "exports": [
+        "load",
+        "loadClasspath",
+        "registry",
+        "execute",
+        "query",
+        "SchemaEngine"
+      ],
+      "totalLines": 138,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/validate/Validator.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "contentHash": "5cbdffba99267a28fde1c9529b273b214012244c0eebd090b9808eabd22f484e",
+      "functions": [
+        {
+          "name": "Validator",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "validate",
+          "params": [
+            "group"
+          ],
+          "returnType": "List<IntentError>",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "validateOne",
+          "params": [
+            "op",
+            "earlierOpNames",
+            "errors"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 46
+        },
+        {
+          "name": "validateValue",
+          "params": [
+            "op",
+            "def",
+            "value",
+            "errors"
+          ],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 72
+        },
+        {
+          "name": "isLongString",
+          "params": [
+            "v"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "toBigDecimal",
+          "params": [
+            "v"
+          ],
+          "returnType": "BigDecimal",
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "Validator",
+          "methods": [
+            "Validator",
+            "validate",
+            "validateOne",
+            "validateValue",
+            "isLongString",
+            "toBigDecimal"
+          ],
+          "properties": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 156
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.IntentGroup",
+          "specifiers": [
+            "IntentGroup"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.OpType",
+          "specifiers": [
+            "OpType"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.ReferenceParser",
+          "specifiers": [
+            "ReferenceParser"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentError",
+          "specifiers": [
+            "IntentError"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.FieldDef",
+          "specifiers": [
+            "FieldDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "java.math.BigDecimal",
+          "specifiers": [
+            "BigDecimal"
+          ]
+        },
+        {
+          "source": "java.time.LocalDate",
+          "specifiers": [
+            "LocalDate"
+          ]
+        },
+        {
+          "source": "java.time.LocalDateTime",
+          "specifiers": [
+            "LocalDateTime"
+          ]
+        },
+        {
+          "source": "java.time.format.DateTimeParseException",
+          "specifiers": [
+            "DateTimeParseException"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.HashSet",
+          "specifiers": [
+            "HashSet"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Set",
+          "specifiers": [
+            "Set"
+          ]
+        }
+      ],
+      "exports": [
+        "Validator",
+        "validate",
+        "toBigDecimal",
+        "Validator"
+      ],
+      "totalLines": 178,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "contentHash": "a98c717e2045a0ace21e8dc78d466c90f790afec75ec70d67b5b1b85a26f85c8",
+      "functions": [
+        {
+          "name": "PendingRow",
+          "params": [
+            "entity",
+            "fields"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "entity",
+          "params": [],
+          "returnType": "String",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "fields",
+          "params": [],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "generatedId",
+          "params": [],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "setGeneratedId",
+          "params": [
+            "id"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "value",
+          "params": [
+            "field"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [
+        {
+          "name": "PendingRow",
+          "methods": [
+            "PendingRow",
+            "entity",
+            "fields",
+            "generatedId",
+            "setGeneratedId",
+            "value"
+          ],
+          "properties": [
+            "entity",
+            "fields",
+            "generatedId"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "imports": [
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "PendingRow",
+        "entity",
+        "fields",
+        "generatedId",
+        "setGeneratedId",
+        "value",
+        "PendingRow"
+      ],
+      "totalLines": 30,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "contentHash": "a3e89e9098b59992b4341f9248f6b226fc3d2f4ba8ed9f7c7db2f303d6d8a567",
+      "functions": [
+        {
+          "name": "ReferenceResolver",
+          "params": [
+            "vm"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "resolve",
+          "params": [
+            "op"
+          ],
+          "returnType": "Map<String, Object>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "resolveValue",
+          "params": [
+            "value"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "ReferenceResolver",
+          "methods": [
+            "ReferenceResolver",
+            "resolve",
+            "resolveValue"
+          ],
+          "properties": [
+            "vm"
+          ],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.ReferenceParser",
+          "specifiers": [
+            "ReferenceParser"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferenceResolver",
+        "resolve",
+        "resolveValue",
+        "ReferenceResolver"
+      ],
+      "totalLines": 40,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "contentHash": "ca739b36d7c4b9e0adfd4347cac435dd31c0328977b8f8c1f246b79d8b968db1",
+      "functions": [
+        {
+          "name": "VirtualMachine",
+          "params": [
+            "registry"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "register",
+          "params": [
+            "opName",
+            "row"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "get",
+          "params": [
+            "opName"
+          ],
+          "returnType": "PendingRow",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "has",
+          "params": [
+            "opName"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "countRelatedPending",
+          "params": [
+            "parentEntity",
+            "parentId",
+            "parentRelation"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "countRelatedDb",
+          "params": [
+            "conn",
+            "parentEntity",
+            "parentId",
+            "parentRelation"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "existsInDb",
+          "params": [
+            "ds",
+            "entity",
+            "id"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 12
+        }
+      ],
+      "classes": [
+        {
+          "name": "VirtualMachine",
+          "methods": [
+            "VirtualMachine",
+            "register",
+            "get",
+            "has",
+            "countRelatedPending",
+            "countRelatedDb",
+            "existsInDb"
+          ],
+          "properties": [
+            "registry",
+            "pending"
+          ],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.RelationDef",
+          "specifiers": [
+            "RelationDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "javax.sql.DataSource",
+          "specifiers": [
+            "DataSource"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.PreparedStatement",
+          "specifiers": [
+            "PreparedStatement"
+          ]
+        },
+        {
+          "source": "java.sql.ResultSet",
+          "specifiers": [
+            "ResultSet"
+          ]
+        },
+        {
+          "source": "java.sql.SQLException",
+          "specifiers": [
+            "SQLException"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Objects",
+          "specifiers": [
+            "Objects"
+          ]
+        }
+      ],
+      "exports": [
+        "VirtualMachine",
+        "register",
+        "get",
+        "has",
+        "countRelatedPending",
+        "countRelatedDb",
+        "existsInDb",
+        "VirtualMachine"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java": {
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "contentHash": "346d1b2c7748e59c2ad138fd8b0e45255d0b53aa9befce680b553c3a8bf040a5",
+      "functions": [
+        {
+          "name": "schemaDir",
+          "params": [],
+          "returnType": "Path",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "loadsAllEntities",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "parsesFieldsCorrectly",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "parsesRelations",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "parsesIntegrityRules",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "buildsRelationGraph",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "SchemaLoaderTest",
+          "methods": [
+            "schemaDir",
+            "loadsAllEntities",
+            "parsesFieldsCorrectly",
+            "parsesRelations",
+            "parsesIntegrityRules",
+            "buildsRelationGraph"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 85
+        }
+      ],
+      "imports": [
+        {
+          "source": "org.junit.jupiter.api.Test",
+          "specifiers": [
+            "Test"
+          ]
+        },
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.nio.file.Paths",
+          "specifiers": [
+            "Paths"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions",
+          "specifiers": [
+            "*"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/test/resources/test-schema/drug.yml": {
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "contentHash": "53ff96571e0d4ea45250eac9f73787d87161a54dd1a767fbb6d8b48d6f166c12",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/test/resources/test-schema/prescription.yml": {
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "contentHash": "3c1c5481b636e00d7ade73737bba543f5ae33b58cf9a587e2f8e05e54a0cc7fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "engine-example/pom.xml": {
+      "filePath": "engine-example/pom.xml",
+      "contentHash": "951454c23ebab72f3e109dd96715aef5d2e02c4e85a9ac516b875c39cd134673",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": false
+    },
+    "engine-example/src/main/resources/schema/drug.yml": {
+      "filePath": "engine-example/src/main/resources/schema/drug.yml",
+      "contentHash": "53ff96571e0d4ea45250eac9f73787d87161a54dd1a767fbb6d8b48d6f166c12",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "engine-example/src/main/resources/schema/prescription.yml": {
+      "filePath": "engine-example/src/main/resources/schema/prescription.yml",
+      "contentHash": "3c1c5481b636e00d7ade73737bba543f5ae33b58cf9a587e2f8e05e54a0cc7fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java": {
+      "filePath": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "contentHash": "0c347707d22968f73e8973ebfa723588581ced65b0a74e3c4255505f0b8700bd",
+      "functions": [
+        {
+          "name": "setUpAll",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "resetDb",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "createsPrescriptionWithItems",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "rejectsPrescriptionWithoutItems",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "rejectsWhenStockInsufficient",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 27
+        },
+        {
+          "name": "queryWithNestedInclude",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 31
+        },
+        {
+          "name": "buildDataSource",
+          "params": [],
+          "returnType": "DataSource",
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "readResource",
+          "params": [
+            "path"
+          ],
+          "returnType": "String",
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [
+        {
+          "name": "PrescriptionIntegrationTest",
+          "methods": [
+            "setUpAll",
+            "resetDb",
+            "createsPrescriptionWithItems",
+            "rejectsPrescriptionWithoutItems",
+            "rejectsWhenStockInsufficient",
+            "queryWithNestedInclude",
+            "buildDataSource",
+            "readResource"
+          ],
+          "properties": [
+            "dataSource",
+            "engine"
+          ],
+          "exported": false,
+          "lineCount": 168
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.SchemaEngine",
+          "specifiers": [
+            "SchemaEngine"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.IntentGroup",
+          "specifiers": [
+            "IntentGroup"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.QueryIntent",
+          "specifiers": [
+            "QueryIntent"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentResult",
+          "specifiers": [
+            "IntentResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.QueryResult",
+          "specifiers": [
+            "QueryResult"
+          ]
+        },
+        {
+          "source": "com.zaxxer.hikari.HikariConfig",
+          "specifiers": [
+            "HikariConfig"
+          ]
+        },
+        {
+          "source": "com.zaxxer.hikari.HikariDataSource",
+          "specifiers": [
+            "HikariDataSource"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.BeforeAll",
+          "specifiers": [
+            "BeforeAll"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.BeforeEach",
+          "specifiers": [
+            "BeforeEach"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Test",
+          "specifiers": [
+            "Test"
+          ]
+        },
+        {
+          "source": "javax.sql.DataSource",
+          "specifiers": [
+            "DataSource"
+          ]
+        },
+        {
+          "source": "java.io.IOException",
+          "specifiers": [
+            "IOException"
+          ]
+        },
+        {
+          "source": "java.io.InputStream",
+          "specifiers": [
+            "InputStream"
+          ]
+        },
+        {
+          "source": "java.nio.charset.StandardCharsets",
+          "specifiers": [
+            "StandardCharsets"
+          ]
+        },
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.nio.file.Paths",
+          "specifiers": [
+            "Paths"
+          ]
+        },
+        {
+          "source": "java.sql.Connection",
+          "specifiers": [
+            "Connection"
+          ]
+        },
+        {
+          "source": "java.sql.Statement",
+          "specifiers": [
+            "Statement"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "java.util.Properties",
+          "specifiers": [
+            "Properties"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions",
+          "specifiers": [
+            "*"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 197,
+      "hasStructuralAnalysis": true
+    },
+    "engine-example/src/test/resources/application.properties": {
+      "filePath": "engine-example/src/test/resources/application.properties",
+      "contentHash": "1b01d0120b77d5b199a764342ed87eeef398ce4dcee66f0c8f087a936a0383ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "engine-example/src/test/resources/logback-test.xml": {
+      "filePath": "engine-example/src/test/resources/logback-test.xml",
+      "contentHash": "7ec088f473f015413a3c0909057623d627472d8aef17553b73cfe0c5ec8af7e5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "engine-example/src/test/resources/schema.sql": {
+      "filePath": "engine-example/src/test/resources/schema.sql",
+      "contentHash": "57ac1aa5c9157b1e23155a4fe6466548c53d2efb3de08a980ecb12931c5c9ef7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "pom.xml": {
+      "filePath": "pom.xml",
+      "contentHash": "59745ef066ab40bf92926d732fddcb7e2f07cf59495aa167287a5497602816d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 106,
+      "hasStructuralAnalysis": false
+    }
+  }
+}

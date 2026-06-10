@@ -1,0 +1,425 @@
+{
+  "name": "intentio",
+  "description": "Intentio 是一个基于 Maven 的多模块 Java 17 项目，包含 engine-core 与 engine-example 两个模块。核心引擎通过 YAML schema 定义实体、关系与约束规则，提供 intent 执行、查询、校验与虚拟机等能力，并集成 jOOQ、MySQL 与 HikariCP 进行数据访问。",
+  "languages": [
+    "java",
+    "json",
+    "properties",
+    "sql",
+    "unknown",
+    "xml",
+    "yaml"
+  ],
+  "frameworks": [
+    "JUnit"
+  ],
+  "files": [
+    {
+      "path": ".claude/settings.local.json",
+      "language": "json",
+      "sizeLines": 17,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".cursor/settings.json",
+      "language": "json",
+      "sizeLines": 9,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "unknown",
+      "sizeLines": 13,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-core/pom.xml",
+      "language": "xml",
+      "sizeLines": 49,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "language": "java",
+      "sizeLines": 91,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "language": "java",
+      "sizeLines": 48,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "language": "java",
+      "sizeLines": 87,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "language": "java",
+      "sizeLines": 112,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "language": "java",
+      "sizeLines": 67,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "language": "java",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "language": "java",
+      "sizeLines": 55,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "language": "java",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "language": "java",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "language": "java",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "language": "java",
+      "sizeLines": 192,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "language": "java",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "language": "java",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "language": "java",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "language": "java",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "language": "java",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "language": "java",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "language": "java",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "language": "java",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "language": "java",
+      "sizeLines": 89,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "language": "java",
+      "sizeLines": 28,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "language": "java",
+      "sizeLines": 220,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "language": "java",
+      "sizeLines": 40,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "language": "java",
+      "sizeLines": 137,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "language": "java",
+      "sizeLines": 177,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "language": "java",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "language": "java",
+      "sizeLines": 39,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "language": "java",
+      "sizeLines": 83,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "language": "java",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-core/src/test/resources/test-schema/drug.yml",
+      "language": "yaml",
+      "sizeLines": 21,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "language": "yaml",
+      "sizeLines": 34,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/pom.xml",
+      "language": "xml",
+      "sizeLines": 45,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/src/main/resources/schema/drug.yml",
+      "language": "yaml",
+      "sizeLines": 21,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/src/main/resources/schema/prescription.yml",
+      "language": "yaml",
+      "sizeLines": 34,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java",
+      "language": "java",
+      "sizeLines": 196,
+      "fileCategory": "code"
+    },
+    {
+      "path": "engine-example/src/test/resources/application.properties",
+      "language": "properties",
+      "sizeLines": 12,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/src/test/resources/logback-test.xml",
+      "language": "xml",
+      "sizeLines": 11,
+      "fileCategory": "config"
+    },
+    {
+      "path": "engine-example/src/test/resources/schema.sql",
+      "language": "sql",
+      "sizeLines": 37,
+      "fileCategory": "data"
+    },
+    {
+      "path": "pom.xml",
+      "language": "xml",
+      "sizeLines": 105,
+      "fileCategory": "config"
+    }
+  ],
+  "totalFiles": 45,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "importMap": {
+    ".claude/settings.local.json": [],
+    ".cursor/settings.json": [],
+    ".understand-anything/.understandignore": [],
+    ".understand-anything/config.json": [],
+    "engine-core/pom.xml": [],
+    "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "engine-core/src/main/java/com/intentio/engine/validate/Validator.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "engine-core/src/main/java/com/intentio/engine/validate/Validator.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/Op.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/OpType.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java": [],
+    "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/result/IntentError.java": [],
+    "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java": [],
+    "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/Rule.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java": [],
+    "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": [
+      "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/validate/Validator.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java": [],
+    "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java": [
+      "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+    ],
+    "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java": [],
+    "engine-core/src/test/resources/test-schema/drug.yml": [],
+    "engine-core/src/test/resources/test-schema/prescription.yml": [],
+    "engine-example/pom.xml": [],
+    "engine-example/src/main/resources/schema/drug.yml": [],
+    "engine-example/src/main/resources/schema/prescription.yml": [],
+    "engine-example/src/test/java/com/intentio/engine/example/PrescriptionIntegrationTest.java": [
+      "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java"
+    ],
+    "engine-example/src/test/resources/application.properties": [],
+    "engine-example/src/test/resources/logback-test.xml": [],
+    "engine-example/src/test/resources/schema.sql": [],
+    "pom.xml": []
+  }
+}
