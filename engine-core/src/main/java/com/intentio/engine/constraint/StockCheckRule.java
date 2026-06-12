@@ -1,7 +1,10 @@
 package com.intentio.engine.constraint;
 
 import com.intentio.engine.intent.Op;
+import com.intentio.engine.logging.SqlLogger;
 import com.intentio.engine.result.IntentError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.intentio.engine.schema.EntityDef;
 import com.intentio.engine.schema.Rule;
 import com.intentio.engine.schema.SchemaRegistry;
@@ -18,6 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class StockCheckRule {
+
+    private static final Logger log = LoggerFactory.getLogger(StockCheckRule.class);
 
     private static final Pattern RULE = Pattern.compile(
         "^\\s*stock\\.([A-Za-z_]\\w*)\\s*(>=|<=|>|<|==|!=)\\s*item\\.([A-Za-z_]\\w*)\\s*$");
@@ -45,6 +50,7 @@ public final class StockCheckRule {
 
         EntityDef stockEntity = registry.require(via);
         String sql = "SELECT " + stockCol + " FROM " + stockEntity.table() + " WHERE " + fk + " = ?";
+        SqlLogger.sql(log, "STOCK_CHECK " + op.name() + "@" + op.entity(), sql, fkValue);
         BigDecimal stockValue = null;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, fkValue);

@@ -1,7 +1,10 @@
 package com.intentio.engine.constraint;
 
 import com.intentio.engine.intent.Op;
+import com.intentio.engine.logging.SqlLogger;
 import com.intentio.engine.result.IntentError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.intentio.engine.schema.EntityDef;
 import com.intentio.engine.schema.Rule;
 import com.intentio.engine.schema.SchemaRegistry;
@@ -14,6 +17,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class RefCheckRule {
+
+    private static final Logger log = LoggerFactory.getLogger(RefCheckRule.class);
+
     private final SchemaRegistry registry;
 
     public RefCheckRule(SchemaRegistry registry) {
@@ -36,6 +42,7 @@ public final class RefCheckRule {
     public boolean existsInDb(Connection conn, String entity, Object id) {
         EntityDef def = registry.require(entity);
         String sql = "SELECT 1 FROM " + def.table() + " WHERE id = ?";
+        SqlLogger.sql(log, "REF_CHECK " + entity, sql, id);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, id);
             try (ResultSet rs = ps.executeQuery()) {

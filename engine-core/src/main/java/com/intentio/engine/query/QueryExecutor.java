@@ -1,7 +1,10 @@
 package com.intentio.engine.query;
 
 import com.intentio.engine.intent.QueryIntent;
+import com.intentio.engine.logging.SqlLogger;
 import com.intentio.engine.result.QueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.intentio.engine.schema.EntityDef;
 import com.intentio.engine.schema.FieldDef;
 import com.intentio.engine.schema.RelationDef;
@@ -20,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class QueryExecutor {
+
+    private static final Logger log = LoggerFactory.getLogger(QueryExecutor.class);
 
     private final SchemaRegistry registry;
 
@@ -67,6 +72,8 @@ public final class QueryExecutor {
         sql.append(" ORDER BY ").append(rootAlias).append(".id");
         if (intent.limit() != null) sql.append(" LIMIT ").append(intent.limit());
         if (intent.offset() != null) sql.append(" OFFSET ").append(intent.offset());
+
+        SqlLogger.sql(log, "QUERY " + intent.entity(), sql.toString(), params);
 
         Map<Object, Map<String, Object>> rootRows = new LinkedHashMap<>();
         try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
