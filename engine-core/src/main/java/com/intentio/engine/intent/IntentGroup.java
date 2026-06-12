@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class IntentGroup {
-    private final List<Op> ops;
-
-    private IntentGroup(List<Op> ops) {
-        this.ops = ops;
-    }
+public record IntentGroup(List<Op> ops) {
 
     public static IntentGroup of(Op... ops) {
         return of(Arrays.asList(ops));
@@ -22,6 +17,4 @@ public final class IntentGroup {
         }
         return new IntentGroup(copy);
     }
-
-    public List<Op> ops() { return ops; }
 }
