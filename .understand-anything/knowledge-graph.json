@@ -1,0 +1,4476 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "intentio",
+    "languages": [
+      "java",
+      "yaml",
+      "xml",
+      "sql"
+    ],
+    "frameworks": [
+      "Maven",
+      "jOOQ",
+      "JGraphT",
+      "JUnit 5",
+      "H2",
+      "HikariCP",
+      "SLF4J",
+      "Logback",
+      "SnakeYAML"
+    ],
+    "description": "Intentio 是一个基于 intent（操作意图）的 Java 数据库操作引擎，通过 schema 定义将结构化操作意图转译为 SQL，并提供字段校验、约束检查与拓扑执行排序等核心能力。",
+    "analyzedAt": "2026-06-13T07:23:11.110Z",
+    "gitCommitHash": "35daea91267e565a194f865f9dba6ee3cfa54c27"
+  },
+  "nodes": [
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "type": "file",
+      "name": "ConstraintEngine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "summary": "约束引擎核心类，在操作执行前后（checkPre / checkPost）对操作意图进行完整性规则校验，包括外键引用检查、库存检查及级联删除限制检测。",
+      "tags": [
+        "service",
+        "validation",
+        "constraint",
+        "middleware"
+      ],
+      "complexity": "complex",
+      "languageNotes": "通过组合 RequireHasRule、StockCheckRule、RefCheckRule 三个规则实现策略模式，并借助 VirtualMachine 感知批次内挂起的操作。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "type": "file",
+      "name": "RefCheckRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "summary": "外键引用检查规则，通过 SQL 查询验证所引用的目标记录在数据库中确实存在，不满足时返回 IntentError。",
+      "tags": [
+        "validation",
+        "constraint",
+        "service",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "type": "file",
+      "name": "RequireHasRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "summary": "关联数量约束规则，检查父实体的某一关联关系中子记录数量是否满足最小值要求，结合 VirtualMachine 同时计算挂起与已落库的关联数。",
+      "tags": [
+        "validation",
+        "constraint",
+        "service",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "type": "file",
+      "name": "StockCheckRule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "summary": "库存扣减校验规则，查询指定库存实体字段的当前值，与操作中提交的扣减量比较，库存不足时返回带详细信息的 IntentError。",
+      "tags": [
+        "validation",
+        "constraint",
+        "service",
+        "database"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "type": "file",
+      "name": "DeleteTargets.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "summary": "删除目标 ID 解析工具类，根据操作的 targetId 或 conditions 字段，将删除意图转化为具体的主键列表供后续执行使用。",
+      "tags": [
+        "utility",
+        "service",
+        "database",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "type": "file",
+      "name": "Executor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "summary": "操作意图执行器，将 INSERT / UPDATE / DELETE 三种操作意图转译为带参数绑定的 JDBC 预处理语句并执行，同时实现级联删除与置空子记录的完整逻辑。",
+      "tags": [
+        "service",
+        "database",
+        "api-handler",
+        "serialization"
+      ],
+      "complexity": "complex",
+      "languageNotes": "通过 bindParam 根据 FieldType 枚举对参数做精确类型转换，支持 Long、Decimal、Date、Datetime、Boolean 及枚举类型。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "file",
+      "name": "OpType.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "summary": "操作类型枚举，定义 INSERT、UPDATE、DELETE 三种支持的数据库操作意图类型。",
+      "tags": [
+        "type-definition",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "file",
+      "name": "SqlLogger.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "summary": "SQL 日志工具类，提供带标签的 SQL 语句与参数格式化输出，仅在 INFO 日志级别开启时记录，供引擎内各组件复用。",
+      "tags": [
+        "utility",
+        "service",
+        "singleton"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "file",
+      "name": "IntentError.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "summary": "操作意图错误记录类，携带操作名、实体名、字段名及错误消息，通过工厂方法 of 和 field 构造不同场景的错误对象。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "file",
+      "name": "EntityDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "summary": "实体 schema 定义，包含表名、字段映射和关联关系映射，提供 primaryKey() 与 relation() 快捷访问方法。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "file",
+      "name": "FieldDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "summary": "字段 schema 定义，描述字段名称、类型、主键标识、自增、必填、可写性及长度/精度/枚举值等约束属性。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "file",
+      "name": "FieldType.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "summary": "字段类型枚举，支持 LONG、STRING、DECIMAL、DATE、DATETIME、BOOLEAN、ENUM 七种类型，并提供字符串解析方法。",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "schema-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "file",
+      "name": "RelationDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "summary": "关联关系 schema 定义，包含关系名称、种类（HAS_MANY / BELONGS_TO 等）、外键列名、目标实体及删除行为（CASCADE / RESTRICT / SET_NULL）。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "file",
+      "name": "Rule.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "summary": "约束规则 schema 定义，携带规则类型、参数列表和自定义错误消息，供约束引擎在运行时读取并执行对应检查逻辑。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "file",
+      "name": "SchemaRegistry.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "summary": "实体 schema 注册表，以名称为键索引所有 EntityDef，提供 find / require 快速查找，并维护关系拓扑图 relationGraph。",
+      "tags": [
+        "service",
+        "singleton",
+        "data-model",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "file",
+      "name": "Validator.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "summary": "操作意图字段校验器，对 IntentGroup 内每个操作的字段合法性、可写性、必填性及类型精度进行逐字段验证，并解析跨操作引用。",
+      "tags": [
+        "validation",
+        "service",
+        "middleware"
+      ],
+      "complexity": "complex",
+      "languageNotes": "validateOne 与 validateValue 形成两层校验递归：前者校验操作级约束（字段存在、可写、引用合法），后者处理字段值的类型与长度精度约束。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "file",
+      "name": "VirtualMachine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "summary": "批次执行虚拟机，维护当前批次内已生成行记录的挂起状态（pending），为约束规则提供批次内关联计数与数据库实体存在性查询能力。",
+      "tags": [
+        "service",
+        "middleware",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "class",
+      "name": "ConstraintEngine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        22,
+        139
+      ],
+      "summary": "约束引擎，组合三种规则实现操作前后完整性校验，包括级联删除限制与 BELONGS_TO 引用验证。",
+      "tags": [
+        "service",
+        "constraint",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "class",
+      "name": "RefCheckRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        19,
+        55
+      ],
+      "summary": "外键引用检查规则类，验证操作字段中引用的目标 ID 在数据库中存在。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "class",
+      "name": "RequireHasRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "lineRange": [
+        14,
+        42
+      ],
+      "summary": "子记录数量约束规则类，确保父实体关联的子记录满足最小数量要求。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "class",
+      "name": "StockCheckRule",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "lineRange": [
+        23,
+        93
+      ],
+      "summary": "库存扣减检查规则类，解析规则参数中的实体、字段及操作数关系，查询当前库存并与操作值对比。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:DeleteTargets",
+      "type": "class",
+      "name": "DeleteTargets",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "lineRange": [
+        22,
+        63
+      ],
+      "summary": "静态工具类，将 DELETE 操作意图中的 targetId 或 conditions 解析为数据库主键 ID 列表。",
+      "tags": [
+        "utility",
+        "database",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "class",
+      "name": "Executor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        30,
+        197
+      ],
+      "summary": "SQL 执行器，将操作意图转化为具体 JDBC 操作，实现插入自增主键回填、级联删除树遍历及多类型参数绑定。",
+      "tags": [
+        "service",
+        "database",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:SqlLogger",
+      "type": "class",
+      "name": "SqlLogger",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "lineRange": [
+        12,
+        51
+      ],
+      "summary": "SQL 语句日志工具类，格式化输出带标签的 SQL 及参数列表，内部使用 SLF4J。",
+      "tags": [
+        "utility",
+        "singleton"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "class",
+      "name": "SchemaRegistry",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "lineRange": [
+        8,
+        40
+      ],
+      "summary": "Schema 注册表，维护实体名到 EntityDef 的映射及关系拓扑图，支持 find（可为空）与 require（找不到时抛异常）两种查找模式。",
+      "tags": [
+        "service",
+        "data-model",
+        "singleton"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "class",
+      "name": "Validator",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        22,
+        183
+      ],
+      "summary": "字段校验器，对操作组中每个操作进行实体存在性、字段合法性、跨操作引用及类型精度的多层次校验。",
+      "tags": [
+        "validation",
+        "service",
+        "middleware"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "class",
+      "name": "VirtualMachine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        19,
+        91
+      ],
+      "summary": "批次执行虚拟机，管理批次内挂起行记录，为约束规则提供内存与数据库两路关联计数及存在性查询。",
+      "tags": [
+        "service",
+        "middleware",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "function",
+      "name": "checkPre",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        37,
+        61
+      ],
+      "summary": "操作执行前约束检查，根据实体 integrity 配置依次执行库存检查与外键引用检查，UPDATE 时检查 BELONGS_TO 引用，DELETE 时检查级联 RESTRICT 关系。",
+      "tags": [
+        "constraint",
+        "validation",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkOnDeleteRestrict",
+      "type": "function",
+      "name": "checkOnDeleteRestrict",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        64,
+        87
+      ],
+      "summary": "DELETE 操作的级联限制检查，若实体存在 RESTRICT 类关联，则查询子表记录数量，存在子记录时返回错误。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:countChildren",
+      "type": "function",
+      "name": "countChildren",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        89,
+        99
+      ],
+      "summary": "通过 JDBC 统计子表中引用指定父记录 ID 集合的子记录数量，供 checkOnDeleteRestrict 调用。",
+      "tags": [
+        "database",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "function",
+      "name": "checkPost",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        101,
+        114
+      ],
+      "summary": "操作执行后约束检查，根据 integrity 配置执行 RequireHasRule 规则，验证操作完成后子记录数量是否满足约束。",
+      "tags": [
+        "constraint",
+        "validation",
+        "middleware"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "type": "function",
+      "name": "checkBelongsToRefs",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "lineRange": [
+        116,
+        130
+      ],
+      "summary": "校验操作字段中 BELONGS_TO 关联的外键值是否指向已存在的目标实体，未在 VM 中找到时通过 RefCheckRule 查询数据库。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        29,
+        40
+      ],
+      "summary": "外键规则检查入口，从 resolvedFields 中取出引用字段值，调用 existsInDb 验证目标记录存在性。",
+      "tags": [
+        "constraint",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "function",
+      "name": "existsInDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "lineRange": [
+        42,
+        54
+      ],
+      "summary": "通过 JDBC 查询指定实体表中主键为给定值的记录是否存在。",
+      "tags": [
+        "database",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "lineRange": [
+        21,
+        41
+      ],
+      "summary": "子记录数量约束检查，从 VM 获取当前操作生成的行 ID，再查询数据库中已有的关联数量，不足时返回 IntentError。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "function",
+      "name": "check",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "lineRange": [
+        36,
+        92
+      ],
+      "summary": "库存检查核心逻辑，解析规则参数中的实体、字段和运算符，查询当前库存值并与操作提交的扣减量执行大小比较，不足时返回带详细数值的错误。",
+      "tags": [
+        "constraint",
+        "validation",
+        "database"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:resolveIds",
+      "type": "function",
+      "name": "resolveIds",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "lineRange": [
+        28,
+        55
+      ],
+      "summary": "解析 DELETE 操作的目标 ID：若 targetId 存在则直接使用，否则根据 conditions 字典构建 WHERE 条件查询并返回主键列表。",
+      "tags": [
+        "database",
+        "utility",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "function",
+      "name": "execute",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        40,
+        46
+      ],
+      "summary": "操作意图执行入口，根据 OpType 分发到 doInsert、doUpdate、doDelete 三个子方法。",
+      "tags": [
+        "service",
+        "api-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "function",
+      "name": "doInsert",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        48,
+        76
+      ],
+      "summary": "执行 INSERT 语句，自动填充默认值、排除自增主键列、绑定参数，并在执行后回填生成的主键 ID。",
+      "tags": [
+        "database",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "function",
+      "name": "doUpdate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        78,
+        93
+      ],
+      "summary": "执行 UPDATE 语句，将操作字段映射为 SET 子句参数并绑定 targetId 作为 WHERE 条件。",
+      "tags": [
+        "database",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:cascadeDelete",
+      "type": "function",
+      "name": "cascadeDelete",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        106,
+        131
+      ],
+      "summary": "递归级联删除，遍历实体关联关系树，对 CASCADE 子表递归调用自身，对 SET_NULL 子表置空外键，最后删除当前实体行。",
+      "tags": [
+        "database",
+        "service"
+      ],
+      "complexity": "complex",
+      "languageNotes": "使用 path 集合跟踪已访问实体，防止循环关联导致的无限递归。"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:childIdsByFk",
+      "type": "function",
+      "name": "childIdsByFk",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        133,
+        146
+      ],
+      "summary": "通过外键列查询子表中属于指定父 ID 集合的所有子记录 ID，供级联删除流程使用。",
+      "tags": [
+        "database",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:setNullChildren",
+      "type": "function",
+      "name": "setNullChildren",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        148,
+        157
+      ],
+      "summary": "将子表中指定父 ID 集合对应的外键列批量置为 NULL，实现 SET_NULL 删除行为。",
+      "tags": [
+        "database",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "function",
+      "name": "bindParam",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        173,
+        196
+      ],
+      "summary": "根据 FieldType 枚举将操作字段值精确绑定到 JDBC PreparedStatement 的指定位置，支持七种字段类型的类型转换。",
+      "tags": [
+        "database",
+        "serialization",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "function",
+      "name": "require",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "lineRange": [
+        25,
+        31
+      ],
+      "summary": "根据实体名查找 EntityDef，找不到时抛出 IllegalArgumentException，保证引擎内部始终能获取有效的 schema 定义。",
+      "tags": [
+        "service",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "function",
+      "name": "validate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        29,
+        37
+      ],
+      "summary": "对操作组中所有操作顺序执行 validateOne 校验，返回汇总的错误列表，名称集合用于跨操作引用的合法性检查。",
+      "tags": [
+        "validation",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "type": "function",
+      "name": "validateOne",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        39,
+        90
+      ],
+      "summary": "单个操作的综合校验，依次检查实体存在性、DELETE/UPDATE 的目标 ID、字段合法性与可写性、跨操作引用合法性以及 INSERT 的必填字段。",
+      "tags": [
+        "validation",
+        "middleware"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "type": "function",
+      "name": "validateValue",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        92,
+        163
+      ],
+      "summary": "字段值的类型级别校验，对每种 FieldType 执行不同的格式检查：字符串长度、数值精度/小数位、日期时间格式、布尔值及枚举合法性。",
+      "tags": [
+        "validation",
+        "serialization"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "function",
+      "name": "toBigDecimal",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "lineRange": [
+        174,
+        182
+      ],
+      "summary": "将任意数值类型或字符串安全转换为 BigDecimal，供数值校验和 SQL 绑定复用。",
+      "tags": [
+        "utility",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedPending",
+      "type": "function",
+      "name": "countRelatedPending",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        42,
+        59
+      ],
+      "summary": "在批次内挂起记录中统计与指定父记录关联的子记录数量，用于在操作尚未落库时预判约束是否满足。",
+      "tags": [
+        "service",
+        "middleware"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "function",
+      "name": "countRelatedDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        61,
+        76
+      ],
+      "summary": "通过 JDBC 查询数据库中指定父实体关联关系下的子记录数量，用于操作执行后的约束验证。",
+      "tags": [
+        "database",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:existsInDb",
+      "type": "function",
+      "name": "existsInDb",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "lineRange": [
+        78,
+        90
+      ],
+      "summary": "通过 DataSource 连接查询指定实体表中目标 ID 是否存在，供需要跨 DataSource 校验的场景使用。",
+      "tags": [
+        "database",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+      "type": "file",
+      "name": "FilterOp.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+      "summary": "定义查询过滤操作符枚举，包含 CONTAINS、GTE、LTE、IN、IS_NULL 等运算符，供 QueryIntent 过滤条件构建时使用。",
+      "tags": [
+        "type-definition",
+        "utility",
+        "data-model",
+        "api-handler",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "file",
+      "name": "IntentGroup.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "summary": "将多个 Op 操作意图组合成一个执行批次，提供静态工厂方法 of 以便链式构建操作组并自动分配默认名称。",
+      "tags": [
+        "data-model",
+        "factory",
+        "utility",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "file",
+      "name": "QueryIntent.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "summary": "以 Builder 模式封装查询意图，支持过滤条件（filter/filterAnyOf）、排序（orderBy/orderByDesc）、列投影（select）及分页（limit/offset）等能力。",
+      "tags": [
+        "data-model",
+        "factory",
+        "utility",
+        "api-handler",
+        "tested"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "采用流式 Builder 风格，所有方法返回 this，便于链式调用构建查询意图。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "file",
+      "name": "IntentResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "summary": "封装写操作（insert/update/delete）执行结果，提供 success/failure 静态工厂方法及 generatedId 便捷访问器。",
+      "tags": [
+        "data-model",
+        "utility",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "file",
+      "name": "QueryResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "summary": "封装查询操作返回的行集合，提供 size()、first() 便捷方法以简化测试和业务代码中的结果访问。",
+      "tags": [
+        "data-model",
+        "utility",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "type": "file",
+      "name": "DeleteEnhancementTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "summary": "测试引擎删除增强功能，覆盖级联删除、SET NULL 置空、RESTRICT 阻止以及 deleteWhere 批量删除四种 on_delete 行为。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "file",
+      "name": "QueryCapabilitiesTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "summary": "测试引擎查询能力，覆盖子串匹配（CONTAINS）、范围过滤（GTE/LTE）、IN 过滤、IS NULL 过滤、降序排序及列投影等场景。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "type": "file",
+      "name": "H2Fixture.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "summary": "测试基础设施类，负责为每个测试创建独立的 H2 内存数据库实例并加载 schema DDL，同时初始化 SchemaEngine 供集成测试使用。",
+      "tags": [
+        "test",
+        "utility",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "type": "file",
+      "name": "FieldPolicyTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "summary": "测试字段级权限策略，验证非可写字段被拒绝写入、trusted 操作绕过可写约束以及 hidden 字段不通过关联查询泄露三种场景。",
+      "tags": [
+        "test",
+        "validation",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "class",
+      "name": "QueryIntent",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "lineRange": [
+        6,
+        82
+      ],
+      "summary": "流式查询意图构建器，封装目标实体、过滤条件、OR 分组、排序规则、列投影与分页参数，作为 SchemaEngine.query 的输入对象。",
+      "tags": [
+        "data-model",
+        "factory",
+        "api-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:DeleteEnhancementTest",
+      "type": "class",
+      "name": "DeleteEnhancementTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "lineRange": [
+        16,
+        103
+      ],
+      "summary": "JUnit 5 测试类，通过 H2Fixture 构建集成环境，验证 SchemaEngine 对级联、置空、限制及批量条件删除的完整处理逻辑。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:QueryCapabilitiesTest",
+      "type": "class",
+      "name": "QueryCapabilitiesTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "lineRange": [
+        19,
+        102
+      ],
+      "summary": "JUnit 5 测试类，通过 H2Fixture 与 QueryIntent 组合验证各类查询过滤操作符、排序及投影功能的正确性。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:H2Fixture",
+      "type": "class",
+      "name": "H2Fixture",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "lineRange": [
+        18,
+        61
+      ],
+      "summary": "测试 fixture 类，通过原子计数器保证每次创建不同的 H2 URL，避免并发测试间数据库污染，同时持有可公开访问的 dataSource 和 engine 字段。",
+      "tags": [
+        "test",
+        "utility",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:FieldPolicyTest",
+      "type": "class",
+      "name": "FieldPolicyTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "lineRange": [
+        18,
+        74
+      ],
+      "summary": "JUnit 5 测试类，基于 H2Fixture 集成环境验证 Intentio 字段权限策略对读写访问的控制行为。",
+      "tags": [
+        "test",
+        "validation",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:cascadeDeletesTwoLevels",
+      "type": "function",
+      "name": "cascadeDeletesTwoLevels",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "lineRange": [
+        37,
+        52
+      ],
+      "summary": "验证删除父记录时，两级子表（Post、Comment）数据通过级联规则自动删除，并确认各表最终行数为零。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:setNullOnDelete",
+      "type": "function",
+      "name": "setNullOnDelete",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "lineRange": [
+        54,
+        69
+      ],
+      "summary": "验证删除父记录后，设置了 SET NULL 策略的子表外键字段被置为 null 而非删除子行。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:restrictBlocksDelete",
+      "type": "function",
+      "name": "restrictBlocksDelete",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "lineRange": [
+        71,
+        85
+      ],
+      "summary": "验证当子表存在引用记录且 on_delete 为 RESTRICT 时，父记录删除被阻止并返回 on_delete 错误。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:deleteWhereBulkRemovesMatchingRows",
+      "type": "function",
+      "name": "deleteWhereBulkRemovesMatchingRows",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "lineRange": [
+        87,
+        102
+      ],
+      "summary": "验证 deleteWhere 按条件批量删除多行，只删除匹配条件的记录，不影响其他行的计数。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:rangeFilters",
+      "type": "function",
+      "name": "rangeFilters",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "lineRange": [
+        51,
+        60
+      ],
+      "summary": "验证 FilterOp.GTE 和 FilterOp.LTE 范围过滤操作符能正确筛选满足数值范围条件的记录。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:projectionLimitsColumnsButKeepsPk",
+      "type": "function",
+      "name": "projectionLimitsColumnsButKeepsPk",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "lineRange": [
+        84,
+        93
+      ],
+      "summary": "验证 select 列投影在限制返回字段的同时，始终保留主键（id）字段，确保结果集符合预期键集合。",
+      "tags": [
+        "test",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "function",
+      "name": "create",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "lineRange": [
+        30,
+        39
+      ],
+      "summary": "静态工厂方法，创建独立 H2 内存数据库，执行 DDL 脚本建表，并通过 SchemaEngine.load 加载 schema 配置后返回 H2Fixture 实例。",
+      "tags": [
+        "test",
+        "factory",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:runDdl",
+      "type": "function",
+      "name": "runDdl",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "lineRange": [
+        41,
+        51
+      ],
+      "summary": "从类路径资源读取 DDL SQL 脚本并逐条执行，完成测试数据库表结构初始化。",
+      "tags": [
+        "test",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:nonWritableFieldRejected",
+      "type": "function",
+      "name": "nonWritableFieldRejected",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "lineRange": [
+        27,
+        36
+      ],
+      "summary": "验证写入 schema 中标注为不可写（non-writable）的字段时，引擎拒绝操作并返回包含字段名的校验错误。",
+      "tags": [
+        "test",
+        "validation",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:trustedOpBypassesWritable",
+      "type": "function",
+      "name": "trustedOpBypassesWritable",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "lineRange": [
+        38,
+        55
+      ],
+      "summary": "验证标记为 trusted 的操作可绕过字段可写性限制成功写入，但默认查询仍不返回 hidden 字段，select 显式指定时才可见。",
+      "tags": [
+        "test",
+        "validation",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:hiddenFieldNotLeakedThroughInclude",
+      "type": "function",
+      "name": "hiddenFieldNotLeakedThroughInclude",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "lineRange": [
+        57,
+        73
+      ],
+      "summary": "验证通过 include 关联查询返回嵌套对象时，hidden 字段不会泄露在关联实体的输出中。",
+      "tags": [
+        "test",
+        "validation",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "file",
+      "name": "SchemaEngine.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "summary": "引擎核心入口类，负责加载 schema、协调字段校验、拓扑排序、引用解析、约束检查及 SQL 执行，向外部暴露 execute/query/queryPage 三类操作接口。",
+      "tags": [
+        "entry-point",
+        "service",
+        "api-handler",
+        "orchestration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "class",
+      "name": "SchemaEngine",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        32,
+        181
+      ],
+      "summary": "核心引擎类，持有 Validator、Executor、QueryExecutor 等组件，通过 execute/query/queryPage 方法驱动完整意图执行流程。",
+      "tags": [
+        "service",
+        "api-handler",
+        "singleton",
+        "orchestration"
+      ],
+      "complexity": "complex",
+      "languageNotes": "提供静态工厂方法 load/loadClasspath 用于从文件系统或 classpath 初始化引擎，符合 Java 流行的工厂模式。"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "function",
+      "name": "execute",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        62,
+        146
+      ],
+      "summary": "核心写操作执行方法，完整实现意图组（IntentGroup）的事务处理流水线：字段校验 → 拓扑排序 → 引用解析 → 前置约束 → SQL 执行 → 后置约束 → 提交/回滚。",
+      "tags": [
+        "service",
+        "transaction",
+        "orchestration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "function",
+      "name": "query",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        148,
+        159
+      ],
+      "summary": "执行列表查询，将 QueryIntent 通过 QueryExecutor 转换为 SQL 并返回 QueryResult；查询异常时包装为 RuntimeException 向上抛出。",
+      "tags": [
+        "api-handler",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:queryPage",
+      "type": "function",
+      "name": "queryPage",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "lineRange": [
+        162,
+        174
+      ],
+      "summary": "执行分页查询，调用 QueryExecutor.runPage 返回携带总记录数的 PageResult，查询异常时封装为 RuntimeException。",
+      "tags": [
+        "api-handler",
+        "query",
+        "pagination"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "type": "file",
+      "name": "TopologySorter.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "summary": "基于 Kahn 算法对意图操作（Op）的字段引用依赖关系进行拓扑排序，确保跨操作引用按正确顺序执行。",
+      "tags": [
+        "utility",
+        "graph",
+        "dependency-resolution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:TopologySorter",
+      "type": "class",
+      "name": "TopologySorter",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "lineRange": [
+        17,
+        67
+      ],
+      "summary": "拓扑排序工具类，解析 Op 字段中的跨操作引用（@opName.field）构建 DAG，输出有序操作列表；存在循环依赖时抛出异常。",
+      "tags": [
+        "utility",
+        "graph",
+        "dependency-resolution"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "function",
+      "name": "sort",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "lineRange": [
+        21,
+        66
+      ],
+      "summary": "Kahn 算法实现的拓扑排序：遍历 Op 字段引用建立依赖图，用队列迭代生成有序操作列表，若所有操作无法排尽则抛出 IllegalStateException 标示循环依赖。",
+      "tags": [
+        "utility",
+        "graph",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "file",
+      "name": "Op.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "summary": "表示单个数据库写操作意图（insert/update/delete/deleteWhere）的实体类，提供 builder 风格工厂方法及字段管理接口，是引擎执行的基本单元。",
+      "tags": [
+        "data-model",
+        "factory",
+        "intent"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "class",
+      "name": "Op",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "lineRange": [
+        6,
+        72
+      ],
+      "summary": "操作意图实体类，封装操作类型（insert/update/delete）、目标实体、字段映射、目标 ID 及校验信任标记，通过静态工厂方法创建具体操作实例。",
+      "tags": [
+        "data-model",
+        "factory"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用 LinkedHashMap 保持字段插入顺序，确保 SQL 生成时字段排列的稳定性。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "file",
+      "name": "ReferenceParser.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "summary": "解析字段值中的跨操作引用表达式（如 @opName.field），提供 isReference 检测和 parse 解析两个静态工具方法，是操作间依赖传递的基础工具。",
+      "tags": [
+        "utility",
+        "parser"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "class",
+      "name": "ReferenceParser",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        6,
+        29
+      ],
+      "summary": "静态工具类，通过正则模式匹配解析 @opName.field 格式的操作间字段引用语法，返回内部 Ref 值对象。",
+      "tags": [
+        "utility",
+        "parser"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "file",
+      "name": "SchemaLoader.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "summary": "从文件系统目录或 classpath 加载 YAML schema 文件，将其完整解析为 EntityDef/FieldDef/RelationDef/IntegrityDef 等领域对象并构建 SchemaRegistry。",
+      "tags": [
+        "configuration",
+        "parser",
+        "schema-definition"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "class",
+      "name": "SchemaLoader",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        15,
+        226
+      ],
+      "summary": "Schema 加载与解析工具类，支持目录和 classpath 两种加载来源，包含完整的字段、关联关系、完整性规则解析管道，输出可供引擎直接使用的 SchemaRegistry。",
+      "tags": [
+        "configuration",
+        "parser",
+        "schema-definition"
+      ],
+      "complexity": "complex",
+      "languageNotes": "使用 SnakeYAML 解析 YAML，字段名通过 camelToSnake 自动转换为 snake_case 数据库列名，方便约定优于配置。"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "function",
+      "name": "loadDirectory",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        19,
+        32
+      ],
+      "summary": "从文件系统目录读取所有 .yml/.yaml 文件，按名称排序后逐一解析并合并为 SchemaRegistry，目录不存在时抛出 IllegalArgumentException。",
+      "tags": [
+        "configuration",
+        "loader"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "function",
+      "name": "loadClasspath",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        34,
+        60
+      ],
+      "summary": "从 classpath 目录索引文件读取 schema 列表，按排序逐一加载每个 YAML 文件并解析合并，适用于 JAR 包内嵌 schema 的部署模式。",
+      "tags": [
+        "configuration",
+        "loader"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "function",
+      "name": "parseYaml",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        70,
+        88
+      ],
+      "summary": "使用 SnakeYAML 解析输入流，校验顶层 entities 键存在性，逐一调用 parseEntity 将各实体 YAML 节点转换为 EntityDef 并以名称为键构建映射。",
+      "tags": [
+        "parser",
+        "configuration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "type": "function",
+      "name": "parseEntity",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        90,
+        109
+      ],
+      "summary": "解析单个实体定义的 YAML 节点，提取表名（支持 camelToSnake 自动映射）、字段、关联关系及完整性约束，构造并返回 EntityDef 对象。",
+      "tags": [
+        "parser",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "type": "function",
+      "name": "parseField",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        111,
+        132
+      ],
+      "summary": "解析字段 YAML 节点，提取类型、长度、精度、枚举值、可空性、必填性等约束信息，构造 FieldDef 对象。",
+      "tags": [
+        "parser",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseRuleList",
+      "type": "function",
+      "name": "parseRuleList",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "lineRange": [
+        164,
+        196
+      ],
+      "summary": "解析完整性规则列表 YAML 节点，支持简写字符串、带 target 的对象及带参数映射的结构化三种格式，构建带参数的 Rule 对象列表。",
+      "tags": [
+        "parser",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "type": "file",
+      "name": "PendingRow.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "summary": "表示虚拟机中待执行的行数据，持有实体名和字段映射，在 SQL 执行后记录自动生成的主键 ID 以供后续跨操作引用使用。",
+      "tags": [
+        "data-model",
+        "vm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "class",
+      "name": "PendingRow",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "lineRange": [
+        6,
+        29
+      ],
+      "summary": "执行前暂存行数据的值对象，支持写入数据库生成的主键，并通过 value 方法统一访问字段值（含虚拟 id 列）以支持跨操作引用解析。",
+      "tags": [
+        "data-model",
+        "vm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "type": "file",
+      "name": "ReferenceResolver.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "summary": "在操作执行前将 Op 字段中的跨操作引用占位符（@opName.field）替换为 VirtualMachine 中已生成行的实际字段值。",
+      "tags": [
+        "utility",
+        "vm",
+        "reference-resolution"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "class",
+      "name": "ReferenceResolver",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "lineRange": [
+        9,
+        39
+      ],
+      "summary": "引用解析器，依赖 VirtualMachine 实例，将 Op 字段中的引用表达式批量替换为目标行的真实字段值，为后续 SQL 执行提供完整参数。",
+      "tags": [
+        "utility",
+        "vm",
+        "reference-resolution"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "function",
+      "name": "resolveValue",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "lineRange": [
+        25,
+        38
+      ],
+      "summary": "对单个字段值执行引用解析：若为引用表达式则通过 VM 查找目标 PendingRow 并返回对应字段值；若目标行不存在或字段值为 null 则抛出 IllegalStateException。",
+      "tags": [
+        "utility",
+        "vm"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "type": "file",
+      "name": "Filter.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "summary": "表示单个查询过滤条件的 Java record，封装字段名、过滤操作符（FilterOp）与过滤值，供 QueryIntent 组装 WHERE 子句使用；对 IS_NULL/IS_NOT_NULL 操作 value 字段无意义，对 IN 操作 value 应为集合或数组。",
+      "tags": [
+        "data-model",
+        "value-object",
+        "type-definition",
+        "query"
+      ],
+      "complexity": "simple",
+      "languageNotes": "使用 Java 16+ record 语法，自动生成 canonical 构造器与 accessor 方法。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "type": "file",
+      "name": "Order.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "summary": "表示单个排序项的 Java record，包含字段名与升降序标志（asc=true 为升序），供 QueryIntent 配置 ORDER BY 子句使用。",
+      "tags": [
+        "data-model",
+        "value-object",
+        "type-definition",
+        "query"
+      ],
+      "complexity": "simple",
+      "languageNotes": "使用 Java record 语法，accessor 方法与字段同名（field()、asc()）。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "file",
+      "name": "QueryExecutor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "summary": "核心查询执行器，将 QueryIntent 转译为参数化 SQL（含 LEFT JOIN 规划、WHERE 条件与 ORDER BY/LIMIT 拼装），执行后将扁平 ResultSet 映射为嵌套 Map 结构；同时提供 runPage 方法先执行 COUNT(*) 后执行数据查询以支持分页。",
+      "tags": [
+        "service",
+        "sql-builder",
+        "query",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "class",
+      "name": "QueryExecutor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        31,
+        337
+      ],
+      "summary": "持有 SchemaRegistry 引用的查询执行器类，提供 run（列表查询）和 runPage（分页查询）两个公开方法，通过内部多个私有辅助方法完成 SQL 构建与结果折叠。",
+      "tags": [
+        "service",
+        "sql-builder",
+        "query"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "function",
+      "name": "run",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        41,
+        107
+      ],
+      "summary": "根据 QueryIntent 构建完整的 SELECT SQL（含 JOIN、WHERE、ORDER BY、LIMIT/OFFSET），执行预编译语句后通过 foldRow 将结果集折叠为根实体到嵌套 Map 的有序映射并返回 QueryResult。",
+      "tags": [
+        "query",
+        "sql-builder",
+        "service"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "function",
+      "name": "runPage",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        113,
+        136
+      ],
+      "summary": "分页查询实现：先执行 COUNT(*) 语句获取满足过滤条件的总记录数，再调用 run 获取当前页数据，返回封装了行列表与总数的 PageResult。",
+      "tags": [
+        "query",
+        "pagination",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "function",
+      "name": "appendWhere",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        139,
+        166
+      ],
+      "summary": "向 SQL StringBuilder 拼接 WHERE 子句，支持 AND 条件组（filters）与 OR 条件组（orGroups），每个条件通过 appendCondition 生成具体的比较片段。",
+      "tags": [
+        "sql-builder",
+        "utility",
+        "query"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "type": "function",
+      "name": "appendCondition",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        176,
+        204
+      ],
+      "summary": "根据 Filter 的操作符类型（EQ、NE、GT、LT、GE、LE、LIKE、IS_NULL、IN、NOT_IN 等）向 SQL 拼接对应的条件片段，并将参数值追加到 params 列表。",
+      "tags": [
+        "sql-builder",
+        "utility",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:toList",
+      "type": "function",
+      "name": "toList",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        206,
+        216
+      ],
+      "summary": "将任意值（Collection、数组或单值）统一转换为 List，用于 IN / NOT_IN 条件的参数标准化处理。",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "function",
+      "name": "foldRow",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        218,
+        253
+      ],
+      "summary": "将 ResultSet 的单行数据按 projection 映射到各路径的列值 Map，再依据 JoinNode 的关系类型（ONE_TO_MANY/MANY_TO_ONE）将子实体数据合并到根实体的嵌套结构中，去重后写入 rootRows。",
+      "tags": [
+        "utility",
+        "serialization",
+        "query"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "function",
+      "name": "locate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        255,
+        271
+      ],
+      "summary": "通过点分隔的路径字符串在 rootRows 的嵌套 Map 结构中定位并返回目标层级的 Map，用于 foldRow 将子实体数据挂载到正确的嵌套位置。",
+      "tags": [
+        "utility",
+        "query"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "function",
+      "name": "planJoins",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        273,
+        303
+      ],
+      "summary": "根据 QueryIntent 的 includes 配置，通过 RelationGraph 解析关系路径并构建 JoinNode 列表，为每个关联路径分配 SQL 别名，供 run 方法生成 LEFT JOIN 子句使用。",
+      "tags": [
+        "query",
+        "sql-builder",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendColumns",
+      "type": "function",
+      "name": "appendColumns",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        309,
+        325
+      ],
+      "summary": "遍历实体的字段定义，根据显式字段集合或可读性与主键标志过滤后，将 alias.column AS alias_column 格式的列表达式追加到 SQL，并向 projection 列表添加对应的 ColumnRef。",
+      "tags": [
+        "sql-builder",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "type": "file",
+      "name": "PageResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "summary": "分页查询结果的 Java record，封装数据行列表（自动防御性拷贝）与总记录数，提供 size() 便捷方法，作为 SchemaEngine.queryPage 的返回类型。",
+      "tags": [
+        "data-model",
+        "value-object",
+        "pagination",
+        "result"
+      ],
+      "complexity": "simple",
+      "languageNotes": "compact constructor 中对 rows 进行防御性拷贝（List.copyOf），保证不可变性。"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "file",
+      "name": "RelationGraph.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "summary": "基于 JGraphT 有向图存储实体间关联关系的图结构，提供静态工厂方法 build 从 SchemaRegistry 构建，以及 path 方法按点分隔的关系路径字符串解析并返回有序的 Edge 列表，供 QueryExecutor 规划 JOIN 路径使用。",
+      "tags": [
+        "schema",
+        "graph",
+        "service",
+        "utility"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "内部使用 JGraphT DefaultDirectedGraph，Edge 为内嵌 record，兼具值相等语义与有向图拓扑能力。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "class",
+      "name": "RelationGraph",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        9,
+        74
+      ],
+      "summary": "封装 JGraphT 有向图的实体关系图类，内嵌 Edge record 定义边的属性，提供构建与路径查询能力。",
+      "tags": [
+        "schema",
+        "graph",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "function",
+      "name": "build",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        32,
+        49
+      ],
+      "summary": "静态工厂方法，遍历 SchemaRegistry 中所有实体及其关联定义，构建以实体名为顶点、Edge record 为边的有向图，并包装为 RelationGraph 返回；若关联目标实体不存在则抛出 IllegalStateException。",
+      "tags": [
+        "factory",
+        "schema",
+        "graph"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "function",
+      "name": "path",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        53,
+        73
+      ],
+      "summary": "按点分隔的关系路径字符串（如 \"orders.items\"）逐段遍历有向图的出边，解析并返回有序的 Edge 列表；若某段关系名在当前实体的出边中找不到匹配则抛出 IllegalArgumentException。",
+      "tags": [
+        "graph",
+        "utility",
+        "query"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:engine-core/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "engine-core/pom.xml",
+      "summary": "engine-core 子模块的 Maven 构建配置，声明了 snakeyaml、jgrapht、jOOQ、SLF4J 等运行时依赖，以及 JUnit、H2、Logback 等测试依赖。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven",
+        "dependencies"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "file",
+      "name": "IntegrityDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "summary": "定义实体完整性约束的不可变 Java record，包含 onCreate、onUpdate、onDelete 钩子规则列表以及字段级规则映射，提供 empty() 工厂方法。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "validation",
+        "immutable",
+        "tested"
+      ],
+      "complexity": "simple",
+      "languageNotes": "使用 Java 16+ record 特性配合 compact constructor 实现 null 防护，所有集合字段均为不可变副本。"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "file",
+      "name": "SchemaLoaderTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "summary": "SchemaLoader 的 JUnit 5 单元测试，覆盖实体加载、字段解析、关系解析、完整性规则解析及关系图构建等核心功能。",
+      "tags": [
+        "test",
+        "schema-definition",
+        "validation",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "class",
+      "name": "SchemaLoaderTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        10,
+        94
+      ],
+      "summary": "包含 6 个测试方法的 JUnit 5 测试类，系统验证 SchemaLoader 从 YAML 目录加载 schema 的全流程，包括字段元数据、关系定义和完整性规则。",
+      "tags": [
+        "test",
+        "schema-definition",
+        "unit-test"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "function",
+      "name": "parsesFieldsCorrectly",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        25,
+        49
+      ],
+      "summary": "验证字段元数据的完整解析，包括主键标志、自增、类型、required、length、枚举值、defaultValue、precision 及 scale 属性。",
+      "tags": [
+        "test",
+        "validation",
+        "field-parsing"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "function",
+      "name": "parsesIntegrityRules",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        64,
+        83
+      ],
+      "summary": "验证实体级与字段级完整性规则的解析，涵盖 onCreate 钩子的 require_has、stock_check 规则类型及错误消息。",
+      "tags": [
+        "test",
+        "validation",
+        "integrity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "function",
+      "name": "parsesRelations",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [
+        51,
+        62
+      ],
+      "summary": "验证实体关系定义的解析，包括 has_many 与 belongs_to 关系类型、目标实体名称及外键字段。",
+      "tags": [
+        "test",
+        "relation",
+        "schema-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "type": "table",
+      "name": "test-ddl-ext.sql",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "summary": "扩展测试场景的 DDL 脚本，定义了 account、post、comment、audit、token 五张表，用于驱动 account.yml schema 扩展测试。",
+      "tags": [
+        "database",
+        "schema-definition",
+        "test-data",
+        "migration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "type": "table",
+      "name": "account",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [
+        7,
+        14
+      ],
+      "summary": "账户表，含 id、username、secret、age、status 字段，是扩展测试中用户相关实体的根表。",
+      "tags": [
+        "database",
+        "user-model",
+        "test-data"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "type": "table",
+      "name": "post",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [
+        16,
+        21
+      ],
+      "summary": "帖子表，通过 account_id 外键关联 account 表，含 id、account_id、title 字段。",
+      "tags": [
+        "database",
+        "test-data"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "type": "table",
+      "name": "comment",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [
+        23,
+        28
+      ],
+      "summary": "评论表，通过 post_id 外键关联 post 表，含 id、post_id、body 字段。",
+      "tags": [
+        "database",
+        "test-data"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "type": "table",
+      "name": "audit",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [
+        30,
+        35
+      ],
+      "summary": "审计日志表，通过 account_id 外键关联 account 表，记录操作 action，用于扩展测试的删除行为验证。",
+      "tags": [
+        "database",
+        "test-data"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "type": "table",
+      "name": "token",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [
+        37,
+        42
+      ],
+      "summary": "令牌表，通过 account_id 外键关联 account 表，含 tok_value 字段，测试 restrict 级联删除约束。",
+      "tags": [
+        "database",
+        "test-data",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema-ext/account.yml",
+      "type": "config",
+      "name": "account.yml",
+      "filePath": "engine-core/src/test/resources/test-schema-ext/account.yml",
+      "summary": "扩展测试用的实体 schema 配置，定义了 Account、Post、Comment、Audit、Token 五个实体及其字段、关系和 on_delete 级联行为（cascade/set_null/restrict）。",
+      "tags": [
+        "configuration",
+        "schema-definition",
+        "test-data",
+        "entity-mapping"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "config",
+      "name": "drug.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "summary": "药品领域测试 schema，定义 Drug（药品）和 DrugStock（库存）两个实体，DrugStock 包含字段级完整性规则确保库存数量不为负。",
+      "tags": [
+        "configuration",
+        "schema-definition",
+        "test-data",
+        "entity-mapping"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "type": "config",
+      "name": "prescription.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "summary": "处方领域测试 schema，定义 Prescription 和 PrescriptionItem 两个实体，包含 has_many/belongs_to 关系、onCreate 完整性校验及库存跨表检查规则（stock_check）。",
+      "tags": [
+        "configuration",
+        "schema-definition",
+        "test-data",
+        "integrity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "pom.xml",
+      "summary": "Intentio 项目的 Maven 父 POM，定义 engine-core 和 engine-example 两个子模块，统一管理 Java 17 编译器设置、snakeyaml/jgrapht/jOOQ 等所有依赖版本号。",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven",
+        "dependency-management"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用 <dependencyManagement> 集中管理版本，子模块 pom.xml 无需再指定版本号，符合 Maven 多模块最佳实践。"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "function",
+      "name": "isReference",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        16,
+        17
+      ],
+      "summary": "静态工具方法，检测给定值是否符合 @opName.field 引用语法，返回布尔值。",
+      "tags": [
+        "utility",
+        "parser"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "function",
+      "name": "parse",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "lineRange": [
+        20,
+        27
+      ],
+      "summary": "静态工具方法，将 @opName.field 格式的引用字符串解析为 Ref 值对象，语法非法时抛出 IllegalArgumentException。",
+      "tags": [
+        "utility",
+        "parser"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:of",
+      "type": "function",
+      "name": "of",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "lineRange": [
+        17,
+        19
+      ],
+      "summary": "静态工厂方法，以实体定义映射表构造并返回一个 SchemaRegistry 实例。",
+      "tags": [
+        "service",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:sql",
+      "type": "function",
+      "name": "sql",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "lineRange": [
+        24,
+        40
+      ],
+      "summary": "静态工具方法（两个重载），在 INFO 级别记录 SQL 模板与绑定参数，仅在日志开启时执行。",
+      "tags": [
+        "utility",
+        "singleton"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkOnDeleteRestrict",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:countChildren",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:DeleteTargets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:DeleteTargets",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:resolveIds",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:cascadeDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:childIdsByFk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:setNullChildren",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:SqlLogger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateValue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedPending",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:existsInDb",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:ConstraintEngine",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:RefCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:RequireHasRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:StockCheckRule",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:DeleteTargets",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:DeleteTargets",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:resolveIds",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:SqlLogger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:SchemaRegistry",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:Validator",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:VirtualMachine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkBelongsToRefs",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java:existsInDb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkOnDeleteRestrict",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java:resolveIds",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java:countRelatedDb",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java:check",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:DeleteEnhancementTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:QueryCapabilitiesTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:H2Fixture",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:FieldPolicyTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:cascadeDeletesTwoLevels",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:setNullOnDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:restrictBlocksDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:deleteWhereBulkRemovesMatchingRows",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:rangeFilters",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:projectionLimitsColumnsButKeepsPk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:runDdl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:nonWritableFieldRejected",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:trustedOpBypassesWritable",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:hiddenFieldNotLeakedThroughInclude",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java:QueryIntent",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:H2Fixture",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java:DeleteEnhancementTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java:QueryCapabilitiesTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java:FieldPolicyTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java:create",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:queryPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:TopologySorter",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseYaml",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseEntity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseField",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:parseRuleList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:SchemaEngine",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:queryPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:TopologySorter",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/Op.java:Op",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:SchemaLoader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java:PendingRow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:ReferenceResolver",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPre",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java:checkPost",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:query",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java:queryPage",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java:sort",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java:resolveValue",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:ReferenceParser",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:toList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendColumns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:require",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "config:pom.xml",
+      "target": "config:engine-core/pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/pom.xml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/pom.xml",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "config:engine-core/src/test/resources/test-schema-ext/account.yml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema-ext/account.yml",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:isReference",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:validateOne",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java:parse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadDirectory",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java:loadClasspath",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java:of",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:sql",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java:sql",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:engine-entry",
+      "name": "引擎入口层",
+      "description": "SchemaEngine 作为整个引擎的外部公共 API 入口，聚合校验、约束、执行与查询四大子流程，并通过 Maven 父/子 POM 定义模块依赖与构建配置",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+        "config:pom.xml",
+        "config:engine-core/pom.xml"
+      ]
+    },
+    {
+      "id": "layer:intent-model",
+      "name": "意图模型层",
+      "description": "以纯数据对象与枚举表示数据库操作意图（写操作 Op、查询意图 QueryIntent、过滤/排序条件等），并提供跨操作字段引用的解析能力",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+      ]
+    },
+    {
+      "id": "layer:schema-definition",
+      "name": "Schema 定义层",
+      "description": "定义实体、字段、关联关系及完整性约束的 Schema 数据结构，并负责从 YAML 文件加载、注册 Schema 以及用有向图维护实体间的关系拓扑",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+        "config:engine-core/src/test/resources/test-schema/drug.yml",
+        "config:engine-core/src/test/resources/test-schema/prescription.yml",
+        "config:engine-core/src/test/resources/test-schema-ext/account.yml"
+      ]
+    },
+    {
+      "id": "layer:validation-constraint",
+      "name": "校验与约束层",
+      "description": "在意图执行前后对操作字段进行合法性校验（Validator）以及外键引用、关联数量、库存扣减等完整性约束检查（ConstraintEngine 及各规则实现）",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java"
+      ]
+    },
+    {
+      "id": "layer:execution-engine",
+      "name": "执行引擎层",
+      "description": "通过虚拟机（VirtualMachine）调度批次操作，利用拓扑排序解决字段引用依赖，并由 Executor 将写操作意图转译为 JDBC 预处理语句执行",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+        "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+        "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+        "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+        "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+        "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java"
+      ]
+    },
+    {
+      "id": "layer:query-engine",
+      "name": "查询引擎层",
+      "description": "将 QueryIntent 转译为带分页、过滤和排序的参数化 SQL，并通过 JDBC 执行后封装为结构化查询结果",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java"
+      ]
+    },
+    {
+      "id": "layer:result-logging",
+      "name": "结果与日志层",
+      "description": "定义写操作与查询操作的结果数据结构（IntentResult、QueryResult、PageResult、IntentError），并提供 SQL 语句的日志记录工具",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+        "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+        "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+        "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+        "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java"
+      ]
+    },
+    {
+      "id": "layer:test",
+      "name": "测试层",
+      "description": "覆盖删除增强、查询能力、字段权限策略及 Schema 加载的 JUnit 5 测试套件，以及 H2 内存数据库测试基础设施、DDL 脚本与测试用 YAML Schema 数据",
+      "nodeIds": [
+        "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+        "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+        "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+        "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+        "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+        "table:engine-core/src/test/resources/test-ddl-ext.sql:token"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "引擎入口：处理管线总览",
+      "description": "SchemaEngine 是整个引擎对外暴露的唯一门面，向调用方提供 execute（写操作）、query（列表查询）和 queryPage（分页查询）三个核心方法。阅读这个类可以一次性看清引擎的完整处理管线：schema 加载 → 字段校验 → 约束检查 → 拓扑排序 → 虚拟机执行，后续各步将逐层展开这条管线上的每一个子系统。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java"
+      ],
+      "languageLesson": "Java 中的 Facade 模式（门面模式）将多个复杂子系统的调用封装在一个高层接口后面，调用方无需了解内部协调细节。SchemaEngine 正是典型的门面：它持有所有子系统的引用，并按固定顺序编排它们的调用。"
+    },
+    {
+      "order": 2,
+      "title": "写操作意图：Op 与批次模型",
+      "description": "Op 是引擎中最核心的数据载体，表示一条写操作意图——insert、update、delete 或 deleteWhere，携带目标实体名、字段键值对及操作类型枚举 OpType。IntentGroup 将多个 Op 组合成一个原子执行批次，是调用方向引擎提交写请求的标准入参。理解 Op 和 IntentGroup 的结构，是理解后续校验、排序、执行各环节的前提。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java"
+      ],
+      "languageLesson": "Java 枚举（enum）不仅能定义常量，还可以附带方法和字段，形成富类型的策略分支。OpType 枚举限制了合法的操作类型集合，让编译器在编译期排除非法操作，而非推迟到运行时检查。"
+    },
+    {
+      "order": 3,
+      "title": "查询意图：Builder 模式封装",
+      "description": "QueryIntent 以 Builder 模式封装查询请求，支持指定目标实体、选取字段列表、添加 Filter 过滤条件（通过 FilterOp 枚举表达 =、!=、LIKE、IN 等操作符）以及 Order 排序项。这种设计让查询意图的构建具有良好的可读性，与写操作意图（Op）共同构成了引擎的「意图模型层」——一切交互都以高层业务意图而非原始 SQL 来表达。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java"
+      ],
+      "languageLesson": "Builder 模式通过链式方法调用（method chaining）逐步构造复杂对象，避免了多参数构造函数带来的可读性问题。Java record 则以极简语法定义不可变数据载体，Filter 和 Order 都是 record 的典型应用场景。"
+    },
+    {
+      "order": 4,
+      "title": "Schema 领域模型：实体、字段与关系",
+      "description": "EntityDef 是实体 schema 的核心数据结构，聚合了该实体的字段列表（FieldDef）、关联关系（RelationDef）以及完整性约束（IntegrityDef）。FieldDef 描述字段的类型、是否必填、默认值等元数据，是后续 Validator 校验的依据；RelationDef 则描述实体间的外键关系，驱动 ConstraintEngine 的引用检查逻辑。这一层是整个引擎的「知识库」，所有运行时决策都以它为参照。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Schema 加载：YAML 配置到注册表",
+      "description": "SchemaLoader 负责从文件系统目录或 classpath 扫描并解析 YAML 格式的 schema 文件，将它们反序列化为 EntityDef 对象后注入 SchemaRegistry。SchemaRegistry 以实体名称为键维护全局索引，供 Validator、ConstraintEngine、QueryExecutor 等子系统在运行时按名查找。drug.yml 和 prescription.yml 是真实的业务 schema 示例，展示了字段定义、关联关系和完整性规则的 YAML 写法，是理解 schema 格式的最佳切入点。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+        "config:engine-core/src/test/resources/test-schema/drug.yml",
+        "config:engine-core/src/test/resources/test-schema/prescription.yml"
+      ],
+      "languageLesson": "YAML schema 是一种「声明式配置」——开发者只需描述实体的结构和规则，引擎负责解释执行。这种模式将业务知识与引擎代码解耦，新增实体无需修改任何 Java 代码，只需添加一个 YAML 文件。"
+    },
+    {
+      "order": 6,
+      "title": "字段校验：意图数据合法性检查",
+      "description": "Validator 在操作意图进入执行管线前进行第一道防线：根据 SchemaRegistry 中加载的 FieldDef 元数据，逐字段检查 Op 中的数据是否符合类型约束、必填要求等规则。SchemaRegistry 在此作为只读索引被所有校验和约束子系统共享——这正是它 fan-in 最高（被 5 个模块直接依赖）的原因。校验失败的意图会被提前拦截，不会进入后续的拓扑排序和 SQL 执行流程。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+        "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "业务约束引擎：引用、数量与库存",
+      "description": "ConstraintEngine 是第二道防线，在字段校验通过后执行业务级完整性检查。它编排三类规则：RefCheckRule 验证外键引用是否指向数据库中真实存在的记录，RequireHasRule 检查关联数量约束（如「处方必须至少有一个药品」），StockCheckRule 在库存扣减场景下确保库存充足。这些规则围绕 IntegrityDef 中声明的约束配置动态派发，新增业务规则只需实现规则接口并注册，无需修改引擎主流程。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+        "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java"
+      ],
+      "languageLesson": "这是一种策略模式（Strategy Pattern）的变体：ConstraintEngine 是「上下文」，各 *Rule 类是「策略」。通过将规则抽象为独立类而非 if-else 分支，系统具备了「对扩展开放、对修改关闭」的 OCP（开闭原则）特性。"
+    },
+    {
+      "order": 8,
+      "title": "跨操作引用与拓扑排序",
+      "description": "当一个 IntentGroup 中的多个 Op 存在字段引用关系时（例如新建订单的 order_id 字段引用了同批次中新建客户的自增主键），TopologySorter 会先通过 ReferenceParser 解析所有占位符引用表达式，再基于 Kahn 算法构建依赖有向图并完成拓扑排序，确保被引用的 Op 先执行。若存在循环引用则提前报错，从根本上保证了批次操作的执行顺序正确性。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+        "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+      ],
+      "languageLesson": "Kahn 算法是拓扑排序的经典实现：维护一个入度为 0 的节点队列，每次取出一个节点并「消除」它对后继节点的入度贡献，重复直至队列为空。若最终处理节点数少于总节点数，说明存在环路。时间复杂度为 O(V+E)，非常适合在运行时对小规模依赖图排序。"
+    },
+    {
+      "order": 9,
+      "title": "批次执行虚拟机",
+      "description": "VirtualMachine 接收拓扑排序后的 Op 序列并驱动执行：ReferenceResolver 在每个 Op 执行前将占位符替换为前序操作产生的实际数据库值（如自增 ID），PendingRow 在内存中暂存尚未落库的行状态；Executor 最终将每个 Op 转译为带参数绑定的 JDBC 预处理语句（PreparedStatement）并执行，同时通过 SqlLogger 记录结构化 SQL 日志。这一层是引擎「意图 → SQL」转译链的终点。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+        "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+        "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java"
+      ],
+      "languageLesson": "JDBC PreparedStatement 将 SQL 结构与参数值分离传输：数据库可以缓存已解析的执行计划，后续相同结构的语句直接复用，既提升性能又从根本上防止 SQL 注入攻击。"
+    },
+    {
+      "order": 10,
+      "title": "查询执行与结果封装",
+      "description": "QueryExecutor 接收 QueryIntent，根据 SchemaRegistry 中的实体定义动态拼接带 JOIN/WHERE/ORDER BY 子句的参数化 SQL 并执行，将 JDBC ResultSet 映射为 QueryResult（行集合）或 PageResult（分页结果 record）。写操作的执行结果由 IntentResult 封装，包含成功/失败状态和 IntentError 错误详情。至此，引擎的写路径与查询路径均已闭环——调用方始终以高层意图对象为输入，以强类型结果对象为输出，无需接触任何 SQL。",
+      "nodeIds": [
+        "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+        "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+        "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java"
+      ]
+    }
+  ]
+}

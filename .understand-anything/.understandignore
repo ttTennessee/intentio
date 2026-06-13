@@ -20,3 +20,5 @@ docs/
 .cursor/
 .vscode/
 */target/
+CLAUDE.md
+engine-example/
