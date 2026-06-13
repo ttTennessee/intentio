@@ -44,8 +44,9 @@ public final class Validator {
         }
 
         if (op.type() == OpType.DELETE) {
-            if (op.targetId() == null) {
-                errors.add(IntentError.field(op.name(), op.entity(), "id", "DELETE requires target id"));
+            if (op.targetId() == null && op.conditions().isEmpty()) {
+                errors.add(IntentError.field(op.name(), op.entity(), "id",
+                    "DELETE requires target id or conditions"));
             }
             return;
         }
@@ -57,6 +58,11 @@ public final class Validator {
             if (def == null) {
                 errors.add(IntentError.field(op.name(), op.entity(), fieldName,
                     "Field not defined in schema: " + fieldName));
+                continue;
+            }
+            if (!def.writable() && !op.isTrusted()) {
+                errors.add(IntentError.field(op.name(), op.entity(), fieldName,
+                    "Field is not writable: " + fieldName));
                 continue;
             }
             if (ReferenceParser.isReference(value)) {

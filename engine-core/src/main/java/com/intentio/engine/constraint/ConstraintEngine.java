@@ -1,14 +1,20 @@
 package com.intentio.engine.constraint;
 
+import com.intentio.engine.execute.DeleteTargets;
 import com.intentio.engine.intent.Op;
 import com.intentio.engine.intent.OpType;
 import com.intentio.engine.result.IntentError;
 import com.intentio.engine.schema.EntityDef;
+import com.intentio.engine.schema.RelationDef;
 import com.intentio.engine.schema.Rule;
 import com.intentio.engine.schema.SchemaRegistry;
 import com.intentio.engine.vm.VirtualMachine;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +53,49 @@ public final class ConstraintEngine {
             Optional<IntentError> err = checkBelongsToRefs(op, resolvedFields, conn);
             if (err.isPresent()) return err;
         }
+        if (op.type() == OpType.DELETE) {
+            Optional<IntentError> err = checkOnDeleteRestrict(op, conn);
+            if (err.isPresent()) return err;
+        }
         return Optional.empty();
+    }
+
+    /** 父行被删前：对声明 on_delete=restrict 的子关系，若仍有子行则阻止删除。 */
+    private Optional<IntentError> checkOnDeleteRestrict(Op op, Connection conn) {
+        EntityDef entity = registry.require(op.entity());
+        List<RelationDef> restrictRels = entity.relations().values().stream()
+            .filter(r -> r.onDelete() == RelationDef.OnDelete.RESTRICT)
+            .filter(r -> r.kind() != RelationDef.Kind.BELONGS_TO)
+            .toList();
+        if (restrictRels.isEmpty()) return Optional.empty();
+        try {
+            List<Object> ids = DeleteTargets.resolveIds(entity, op, conn);
+            if (ids.isEmpty()) return Optional.empty();
+            for (RelationDef rel : restrictRels) {
+                EntityDef child = registry.require(rel.targetEntity());
+                long count = countChildren(child.table(), rel.fk(), ids, conn);
+                if (count > 0) {
+                    return Optional.of(IntentError.of(op.name(), op.entity(), "on_delete",
+                        "Cannot delete " + op.entity() + ": " + count + " dependent "
+                            + rel.targetEntity() + " row(s) via '" + rel.name() + "'"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("on_delete restrict check failed", e);
+        }
+        return Optional.empty();
+    }
+
+    private long countChildren(String childTable, String fk, List<Object> parentIds, Connection conn)
+            throws SQLException {
+        String in = String.join(", ", Collections.nCopies(parentIds.size(), "?"));
+        String sql = "SELECT COUNT(*) FROM " + childTable + " WHERE " + fk + " IN (" + in + ")";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (int i = 0; i < parentIds.size(); i++) ps.setObject(i + 1, parentIds.get(i));
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getLong(1) : 0L;
+            }
+        }
     }
 
     public Optional<IntentError> checkPost(Op op, Map<String, Object> resolvedFields, Connection conn) {

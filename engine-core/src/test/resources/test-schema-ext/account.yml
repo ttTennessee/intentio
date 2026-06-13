@@ -1,0 +1,44 @@
+entity:
+  Account:
+    table: account
+    fields:
+      id:       { type: long,   pk: true, auto_increment: true }
+      username: { type: string, required: true, length: 64 }
+      secret:   { type: string, length: 128, readable: false, writable: false }
+      age:      { type: long }
+      status:   { type: long,   default: 1 }
+    relations:
+      posts:  { kind: has_many, entity: Post,  fk: account_id, on_delete: cascade }
+      audits: { kind: has_many, entity: Audit, fk: account_id, on_delete: set_null }
+      tokens: { kind: has_many, entity: Token, fk: account_id, on_delete: restrict }
+
+  Post:
+    table: post
+    fields:
+      id:         { type: long,   pk: true, auto_increment: true }
+      account_id: { type: long,   required: true }
+      title:      { type: string, length: 128 }
+    relations:
+      account:  { kind: belongs_to, entity: Account, fk: account_id }
+      comments: { kind: has_many,   entity: Comment, fk: post_id, on_delete: cascade }
+
+  Comment:
+    table: comment
+    fields:
+      id:      { type: long,   pk: true, auto_increment: true }
+      post_id: { type: long,   required: true }
+      body:    { type: string, length: 255 }
+
+  Audit:
+    table: audit
+    fields:
+      id:         { type: long,   pk: true, auto_increment: true }
+      account_id: { type: long }
+      action:     { type: string, length: 64 }
+
+  Token:
+    table: token
+    fields:
+      id:         { type: long,   pk: true, auto_increment: true }
+      account_id: { type: long,   required: true }
+      tok_value:  { type: string, length: 64 }

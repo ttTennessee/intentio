@@ -5,6 +5,7 @@ import com.intentio.engine.logging.SqlLogger;
 import com.intentio.engine.schema.EntityDef;
 import com.intentio.engine.schema.FieldDef;
 import com.intentio.engine.schema.FieldType;
+import com.intentio.engine.schema.RelationDef;
 import com.intentio.engine.schema.SchemaRegistry;
 import com.intentio.engine.validate.Validator;
 import org.slf4j.Logger;
@@ -19,9 +20,12 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class Executor {
 
@@ -90,11 +94,74 @@ public final class Executor {
 
     private void doDelete(Op op, Connection conn) throws SQLException {
         EntityDef entity = registry.require(op.entity());
-        String sql = "DELETE FROM " + entity.table() + " WHERE id = ?";
-        SqlLogger.sql(log, opLabel(op, "DELETE"), sql, op.targetId());
+        List<Object> ids = DeleteTargets.resolveIds(entity, op, conn);
+        if (ids.isEmpty()) return; // 按条件删但无匹配行
+        cascadeDelete(entity, ids, conn, new HashSet<>());
+    }
 
+    /**
+     * 删除指定主键行，并按关系 on_delete 处理子行。
+     * path 为当前删除路径上的实体名集合，用于防止环形级联。
+     */
+    private void cascadeDelete(EntityDef entity, List<Object> ids, Connection conn, Set<String> path)
+            throws SQLException {
+        if (ids.isEmpty()) return;
+        if (!path.add(entity.name())) {
+            // 已在当前路径 → 出现环，直接删本行不再递归
+            deleteByIds(entity.table(), ids, conn);
+            return;
+        }
+        try {
+            for (RelationDef rel : entity.relations().values()) {
+                if (rel.kind() == RelationDef.Kind.BELONGS_TO) continue;
+                EntityDef child = registry.require(rel.targetEntity());
+                switch (rel.onDelete()) {
+                    case CASCADE -> {
+                        List<Object> childIds = childIdsByFk(child.table(), rel.fk(), ids, conn);
+                        cascadeDelete(child, childIds, conn, path);
+                    }
+                    case SET_NULL -> setNullChildren(child.table(), rel.fk(), ids, conn);
+                    case RESTRICT, NO_ACTION -> { /* RESTRICT 已在前置约束处理 */ }
+                }
+            }
+            deleteByIds(entity.table(), ids, conn);
+        } finally {
+            path.remove(entity.name());
+        }
+    }
+
+    private List<Object> childIdsByFk(String table, String fk, List<Object> parentIds, Connection conn)
+            throws SQLException {
+        String in = String.join(", ", Collections.nCopies(parentIds.size(), "?"));
+        String sql = "SELECT id FROM " + table + " WHERE " + fk + " IN (" + in + ")";
+        SqlLogger.sql(log, "CASCADE-SELECT " + table, sql, parentIds);
+        List<Object> ids = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setObject(1, op.targetId());
+            for (int i = 0; i < parentIds.size(); i++) ps.setObject(i + 1, parentIds.get(i));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) ids.add(rs.getObject(1));
+            }
+        }
+        return ids;
+    }
+
+    private void setNullChildren(String table, String fk, List<Object> parentIds, Connection conn)
+            throws SQLException {
+        String in = String.join(", ", Collections.nCopies(parentIds.size(), "?"));
+        String sql = "UPDATE " + table + " SET " + fk + " = NULL WHERE " + fk + " IN (" + in + ")";
+        SqlLogger.sql(log, "SET_NULL " + table, sql, parentIds);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (int i = 0; i < parentIds.size(); i++) ps.setObject(i + 1, parentIds.get(i));
+            ps.executeUpdate();
+        }
+    }
+
+    private void deleteByIds(String table, List<Object> ids, Connection conn) throws SQLException {
+        String in = String.join(", ", Collections.nCopies(ids.size(), "?"));
+        String sql = "DELETE FROM " + table + " WHERE id IN (" + in + ")";
+        SqlLogger.sql(log, "DELETE " + table, sql, ids);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (int i = 0; i < ids.size(); i++) ps.setObject(i + 1, ids.get(i));
             ps.executeUpdate();
         }
     }

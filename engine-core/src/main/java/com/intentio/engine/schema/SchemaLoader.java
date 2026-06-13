@@ -123,14 +123,20 @@ public final class SchemaLoader {
             for (Object o : list) enumValues.add(String.valueOf(o));
         }
         Object defaultValue = body.get("default");
-        return new FieldDef(name, type, required, pk, autoIncrement, length, precision, scale, enumValues, defaultValue);
+        // 读写策略：默认可读可写；select:false 是 readable:false 的别名。
+        boolean readable = !Boolean.FALSE.equals(body.get("readable"))
+                && !Boolean.FALSE.equals(body.get("select"));
+        boolean writable = !Boolean.FALSE.equals(body.get("writable"));
+        return new FieldDef(name, type, required, pk, autoIncrement, length, precision, scale,
+                enumValues, defaultValue, readable, writable);
     }
 
     private static RelationDef parseRelation(String name, Map<String, Object> body) {
         RelationDef.Kind kind = RelationDef.parseKind((String) body.get("kind"));
         String entity = (String) body.get("entity");
         String fk = (String) body.get("fk");
-        return new RelationDef(name, kind, entity, fk);
+        RelationDef.OnDelete onDelete = RelationDef.parseOnDelete((String) body.get("on_delete"));
+        return new RelationDef(name, kind, entity, fk, onDelete);
     }
 
     @SuppressWarnings("unchecked")

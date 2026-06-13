@@ -9,6 +9,8 @@ public final class Op {
     private final Map<String, Object> fields;
     private String name;
     private Object targetId;
+    private final Map<String, Object> conditions = new LinkedHashMap<>();
+    private boolean trusted;
 
     private Op(OpType type, String entity, Map<String, Object> fields) {
         this.type = type;
@@ -32,8 +34,21 @@ public final class Op {
         return op;
     }
 
+    /** 按条件批量删除（等值 AND 组合），用于无主键句柄的场景，如 M2M 中间表重设。 */
+    public static Op deleteWhere(String entity, Map<String, Object> conditions) {
+        Op op = new Op(OpType.DELETE, entity, Map.of());
+        if (conditions != null) op.conditions.putAll(conditions);
+        return op;
+    }
+
     public Op as(String name) {
         this.name = name;
+        return this;
+    }
+
+    /** 标记为可信写入：绕过字段 writable 限制（供引擎内部受控写入，如改密码）。 */
+    public Op trusted() {
+        this.trusted = true;
         return this;
     }
 
@@ -48,6 +63,8 @@ public final class Op {
     public Map<String, Object> fields() { return fields; }
     public String name() { return name; }
     public Object targetId() { return targetId; }
+    public Map<String, Object> conditions() { return conditions; }
+    public boolean isTrusted() { return trusted; }
 
     public void setField(String key, Object value) {
         fields.put(key, value);

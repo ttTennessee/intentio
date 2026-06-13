@@ -1,14 +1,14 @@
 package com.intentio.engine.intent;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class QueryIntent {
     private final String entity;
     private final List<String> includes = new ArrayList<>();
-    private final Map<String, Object> filters = new LinkedHashMap<>();
+    private final List<Filter> filters = new ArrayList<>();
+    private final List<Order> orders = new ArrayList<>();
+    private final List<String> select = new ArrayList<>();
     private Integer limit;
     private Integer offset;
 
@@ -25,8 +25,37 @@ public final class QueryIntent {
         return this;
     }
 
+    /** 等值过滤（兼容旧调用）。 */
     public QueryIntent filter(String field, Object value) {
-        filters.put(field, value);
+        filters.add(new Filter(field, FilterOp.EQ, value));
+        return this;
+    }
+
+    /** 带操作符的过滤。 */
+    public QueryIntent filter(String field, FilterOp op, Object value) {
+        filters.add(new Filter(field, op, value));
+        return this;
+    }
+
+    /** 升序排序。 */
+    public QueryIntent orderBy(String field) {
+        orders.add(new Order(field, true));
+        return this;
+    }
+
+    public QueryIntent orderBy(String field, boolean asc) {
+        orders.add(new Order(field, asc));
+        return this;
+    }
+
+    public QueryIntent orderByDesc(String field) {
+        orders.add(new Order(field, false));
+        return this;
+    }
+
+    /** 限定根实体输出的列（空 = 全列）。 */
+    public QueryIntent select(String... fields) {
+        for (String f : fields) select.add(f);
         return this;
     }
 
@@ -35,7 +64,9 @@ public final class QueryIntent {
 
     public String entity() { return entity; }
     public List<String> includes() { return includes; }
-    public Map<String, Object> filters() { return filters; }
+    public List<Filter> filters() { return filters; }
+    public List<Order> orders() { return orders; }
+    public List<String> select() { return select; }
     public Integer limit() { return limit; }
     public Integer offset() { return offset; }
 }

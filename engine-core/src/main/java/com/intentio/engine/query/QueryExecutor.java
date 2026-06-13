@@ -1,5 +1,7 @@
 package com.intentio.engine.query;
 
+import com.intentio.engine.intent.Filter;
+import com.intentio.engine.intent.Order;
 import com.intentio.engine.intent.QueryIntent;
 import com.intentio.engine.logging.SqlLogger;
 import com.intentio.engine.result.QueryResult;
@@ -17,10 +19,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public final class QueryExecutor {
 
@@ -38,13 +43,20 @@ public final class QueryExecutor {
 
         List<JoinNode> joinNodes = planJoins(intent);
 
+        // 根实体显式投影列（空 = 全部可读列）；列名先做合法性/防注入校验。
+        Set<String> rootSelect = new LinkedHashSet<>();
+        for (String col : intent.select()) {
+            requireColumn(root, col);
+            rootSelect.add(col);
+        }
+
         StringBuilder sql = new StringBuilder("SELECT ");
         List<ColumnRef> projection = new ArrayList<>();
 
-        appendColumns(projection, sql, root, rootAlias, "");
+        appendColumns(projection, sql, root, rootAlias, "", rootSelect);
         for (JoinNode j : joinNodes) {
             sql.append(", ");
-            appendColumns(projection, sql, j.entity, j.alias, j.path);
+            appendColumns(projection, sql, j.entity, j.alias, j.path, null);
         }
 
         sql.append(" FROM ").append(root.table()).append(" ").append(rootAlias);
@@ -60,16 +72,30 @@ public final class QueryExecutor {
         }
 
         List<Object> params = new ArrayList<>();
-        if (!intent.filters().isEmpty()) {
+        List<Filter> filters = intent.filters();
+        if (!filters.isEmpty()) {
             sql.append(" WHERE ");
-            int i = 0;
-            for (Map.Entry<String, Object> f : intent.filters().entrySet()) {
-                if (i++ > 0) sql.append(" AND ");
-                sql.append(rootAlias).append(".").append(f.getKey()).append(" = ?");
-                params.add(f.getValue());
+            for (int fi = 0; fi < filters.size(); fi++) {
+                Filter f = filters.get(fi);
+                requireColumn(root, f.field());
+                if (fi > 0) sql.append(" AND ");
+                appendCondition(sql, params, rootAlias, f);
             }
         }
-        sql.append(" ORDER BY ").append(rootAlias).append(".id");
+
+        if (!intent.orders().isEmpty()) {
+            sql.append(" ORDER BY ");
+            List<Order> orders = intent.orders();
+            for (int oi = 0; oi < orders.size(); oi++) {
+                Order o = orders.get(oi);
+                requireColumn(root, o.field());
+                if (oi > 0) sql.append(", ");
+                sql.append(rootAlias).append(".").append(o.field()).append(o.asc() ? " ASC" : " DESC");
+            }
+        } else {
+            sql.append(" ORDER BY ").append(rootAlias).append(".id");
+        }
+
         if (intent.limit() != null) sql.append(" LIMIT ").append(intent.limit());
         if (intent.offset() != null) sql.append(" OFFSET ").append(intent.offset());
 
@@ -86,6 +112,56 @@ public final class QueryExecutor {
             }
         }
         return new QueryResult(new ArrayList<>(rootRows.values()));
+    }
+
+    /** 列名合法性 + 防注入：必须是实体的真实列。 */
+    private void requireColumn(EntityDef entity, String field) {
+        if (!entity.fields().containsKey(field)) {
+            throw new IllegalArgumentException(
+                "Unknown column '" + field + "' on entity " + entity.name());
+        }
+    }
+
+    private void appendCondition(StringBuilder sql, List<Object> params, String alias, Filter f) {
+        String col = alias + "." + f.field();
+        switch (f.op()) {
+            case EQ -> { sql.append(col).append(" = ?"); params.add(f.value()); }
+            case NE -> { sql.append(col).append(" <> ?"); params.add(f.value()); }
+            case GT -> { sql.append(col).append(" > ?"); params.add(f.value()); }
+            case GTE -> { sql.append(col).append(" >= ?"); params.add(f.value()); }
+            case LT -> { sql.append(col).append(" < ?"); params.add(f.value()); }
+            case LTE -> { sql.append(col).append(" <= ?"); params.add(f.value()); }
+            case LIKE -> { sql.append(col).append(" LIKE ?"); params.add(f.value()); }
+            case CONTAINS -> { sql.append(col).append(" LIKE ?"); params.add("%" + f.value() + "%"); }
+            case IN -> {
+                List<Object> vals = toList(f.value());
+                if (vals.isEmpty()) {
+                    sql.append("1 = 0"); // 空 IN 永不匹配
+                } else {
+                    sql.append(col).append(" IN (");
+                    for (int k = 0; k < vals.size(); k++) {
+                        if (k > 0) sql.append(", ");
+                        sql.append("?");
+                        params.add(vals.get(k));
+                    }
+                    sql.append(")");
+                }
+            }
+            case IS_NULL -> sql.append(col).append(" IS NULL");
+            case IS_NOT_NULL -> sql.append(col).append(" IS NOT NULL");
+        }
+    }
+
+    private static List<Object> toList(Object value) {
+        if (value == null) return List.of();
+        if (value instanceof Collection<?> c) return new ArrayList<>(c);
+        if (value.getClass().isArray()) {
+            int n = java.lang.reflect.Array.getLength(value);
+            List<Object> out = new ArrayList<>(n);
+            for (int i = 0; i < n; i++) out.add(java.lang.reflect.Array.get(value, i));
+            return out;
+        }
+        return List.of(value);
     }
 
     @SuppressWarnings("unchecked")
@@ -175,10 +251,21 @@ public final class QueryExecutor {
         return result;
     }
 
+    /**
+     * 输出列。explicit 非空 = 根实体显式投影（点名列覆盖 readable 限制）；
+     * explicit==null = 全部可读列。两种情况都强制包含主键（foldRow 依赖 id）。
+     */
     private void appendColumns(List<ColumnRef> projection, StringBuilder sql,
-                               EntityDef entity, String alias, String path) {
+                               EntityDef entity, String alias, String path, Set<String> explicit) {
         int i = 0;
         for (FieldDef f : entity.fields().values()) {
+            boolean include;
+            if (explicit != null && !explicit.isEmpty()) {
+                include = explicit.contains(f.name()) || f.pk();
+            } else {
+                include = f.readable() || f.pk();
+            }
+            if (!include) continue;
             if (i++ > 0) sql.append(", ");
             sql.append(alias).append(".").append(f.name())
                 .append(" AS ").append(alias).append("_").append(f.name());

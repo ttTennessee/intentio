@@ -12,7 +12,9 @@ public record FieldDef(
         Integer precision,
         Integer scale,
         List<String> enumValues,
-        Object defaultValue) {
+        Object defaultValue,
+        boolean readable,
+        boolean writable) {
 
     public FieldDef {
         enumValues = enumValues == null ? List.of() : List.copyOf(enumValues);
