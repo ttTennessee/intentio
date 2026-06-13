@@ -13,6 +13,9 @@
 # *.snap
 .claude/
 .git/
+.codegraph/
+.understand-anything/
+docs/
 .idea/
 .cursor/
 .vscode/
