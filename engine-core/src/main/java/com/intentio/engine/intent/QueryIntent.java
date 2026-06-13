@@ -7,6 +7,7 @@ public final class QueryIntent {
     private final String entity;
     private final List<String> includes = new ArrayList<>();
     private final List<Filter> filters = new ArrayList<>();
+    private final List<List<Filter>> orGroups = new ArrayList<>();
     private final List<Order> orders = new ArrayList<>();
     private final List<String> select = new ArrayList<>();
     private Integer limit;
@@ -34,6 +35,14 @@ public final class QueryIntent {
     /** 带操作符的过滤。 */
     public QueryIntent filter(String field, FilterOp op, Object value) {
         filters.add(new Filter(field, op, value));
+        return this;
+    }
+
+    /** 一组 OR 条件（组内 OR,组与根 filters 之间 AND）。常用于 keyword 多字段命中。 */
+    public QueryIntent filterAnyOf(Filter... orFilters) {
+        if (orFilters != null && orFilters.length > 0) {
+            orGroups.add(List.of(orFilters));
+        }
         return this;
     }
 
@@ -65,6 +74,7 @@ public final class QueryIntent {
     public String entity() { return entity; }
     public List<String> includes() { return includes; }
     public List<Filter> filters() { return filters; }
+    public List<List<Filter>> orGroups() { return orGroups; }
     public List<Order> orders() { return orders; }
     public List<String> select() { return select; }
     public Integer limit() { return limit; }

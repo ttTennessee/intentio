@@ -9,6 +9,7 @@ import com.intentio.engine.intent.QueryIntent;
 import com.intentio.engine.query.QueryExecutor;
 import com.intentio.engine.result.IntentError;
 import com.intentio.engine.result.IntentResult;
+import com.intentio.engine.result.PageResult;
 import com.intentio.engine.result.QueryResult;
 import com.intentio.engine.schema.SchemaLoader;
 import com.intentio.engine.schema.SchemaRegistry;
@@ -154,6 +155,21 @@ public final class SchemaEngine {
         } catch (Exception e) {
             log.warn("query failed: entity={}", intent.entity(), e);
             throw new RuntimeException("query failed: " + e.getMessage(), e);
+        }
+    }
+
+    /** 分页查询：返回 {rows, total}。total 用独立 COUNT(*) SQL 计算,不受 limit/offset 影响。 */
+    public PageResult queryPage(QueryIntent intent) {
+        log.info("queryPage start: entity={} filters={} limit={} offset={}",
+            intent.entity(), intent.filters(), intent.limit(), intent.offset());
+        try (Connection conn = dataSource.getConnection()) {
+            PageResult result = queryExecutor.runPage(intent, conn);
+            log.info("queryPage done: entity={} rows={} total={}",
+                intent.entity(), result.size(), result.total());
+            return result;
+        } catch (Exception e) {
+            log.warn("queryPage failed: entity={}", intent.entity(), e);
+            throw new RuntimeException("queryPage failed: " + e.getMessage(), e);
         }
     }
 

@@ -4,6 +4,7 @@ import com.intentio.engine.intent.Filter;
 import com.intentio.engine.intent.Order;
 import com.intentio.engine.intent.QueryIntent;
 import com.intentio.engine.logging.SqlLogger;
+import com.intentio.engine.result.PageResult;
 import com.intentio.engine.result.QueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,16 +73,7 @@ public final class QueryExecutor {
         }
 
         List<Object> params = new ArrayList<>();
-        List<Filter> filters = intent.filters();
-        if (!filters.isEmpty()) {
-            sql.append(" WHERE ");
-            for (int fi = 0; fi < filters.size(); fi++) {
-                Filter f = filters.get(fi);
-                requireColumn(root, f.field());
-                if (fi > 0) sql.append(" AND ");
-                appendCondition(sql, params, rootAlias, f);
-            }
-        }
+        appendWhere(sql, params, root, rootAlias, intent);
 
         if (!intent.orders().isEmpty()) {
             sql.append(" ORDER BY ");
@@ -112,6 +104,65 @@ public final class QueryExecutor {
             }
         }
         return new QueryResult(new ArrayList<>(rootRows.values()));
+    }
+
+    /**
+     * 分页查询：先 count(剥 limit/offset/order/JOIN),再走 run() 取分页数据。
+     * count 只走根表,因 filter 仅允许根列(requireColumn 强制)。
+     */
+    public PageResult runPage(QueryIntent intent, Connection conn) throws SQLException {
+        EntityDef root = registry.require(intent.entity());
+        String rootAlias = "t0";
+
+        StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
+            .append(root.table()).append(" ").append(rootAlias);
+        List<Object> countParams = new ArrayList<>();
+        appendWhere(countSql, countParams, root, rootAlias, intent);
+
+        SqlLogger.sql(log, "COUNT " + intent.entity(), countSql.toString(), countParams);
+
+        long total;
+        try (PreparedStatement ps = conn.prepareStatement(countSql.toString())) {
+            for (int i = 0; i < countParams.size(); i++) ps.setObject(i + 1, countParams.get(i));
+            try (ResultSet rs = ps.executeQuery()) {
+                total = rs.next() ? rs.getLong(1) : 0L;
+            }
+        }
+
+        QueryResult rows = total == 0
+            ? new QueryResult(List.of())
+            : run(intent, conn);
+        return new PageResult(rows.rows(), total);
+    }
+
+    /** 根 filters 与 OR groups 一起拼 WHERE。组与根条件之间 AND,组内 OR。 */
+    private void appendWhere(StringBuilder sql, List<Object> params,
+                             EntityDef root, String rootAlias, QueryIntent intent) {
+        List<Filter> filters = intent.filters();
+        List<List<Filter>> orGroups = intent.orGroups();
+        if (filters.isEmpty() && orGroups.isEmpty()) return;
+
+        sql.append(" WHERE ");
+        boolean first = true;
+        for (Filter f : filters) {
+            requireColumn(root, f.field());
+            if (!first) sql.append(" AND ");
+            appendCondition(sql, params, rootAlias, f);
+            first = false;
+        }
+        for (List<Filter> group : orGroups) {
+            if (group.isEmpty()) continue;
+            if (!first) sql.append(" AND ");
+            sql.append("(");
+            for (int gi = 0; gi < group.size(); gi++) {
+                Filter f = group.get(gi);
+                requireColumn(root, f.field());
+                if (gi > 0) sql.append(" OR ");
+                appendCondition(sql, params, rootAlias, f);
+            }
+            sql.append(")");
+            first = false;
+        }
     }
 
     /** 列名合法性 + 防注入：必须是实体的真实列。 */
