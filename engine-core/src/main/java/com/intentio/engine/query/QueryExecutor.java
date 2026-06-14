@@ -1,5 +1,6 @@
 package com.intentio.engine.query;
 
+import com.intentio.engine.jdbc.JdbcValueCoercer;
 import com.intentio.engine.intent.Filter;
 import com.intentio.engine.intent.Order;
 import com.intentio.engine.intent.QueryIntent;
@@ -221,7 +222,7 @@ public final class QueryExecutor {
         Map<String, Map<String, Object>> rowByPath = new LinkedHashMap<>();
         for (int i = 0; i < projection.size(); i++) {
             ColumnRef ref = projection.get(i);
-            Object value = rs.getObject(i + 1);
+            Object value = JdbcValueCoercer.coerce(rs.getObject(i + 1), ref.field());
             rowByPath.computeIfAbsent(ref.path, k -> new LinkedHashMap<>())
                 .put(ref.column, value);
         }
@@ -320,7 +321,7 @@ public final class QueryExecutor {
             if (i++ > 0) sql.append(", ");
             sql.append(alias).append(".").append(f.name())
                 .append(" AS ").append(alias).append("_").append(f.name());
-            projection.add(new ColumnRef(path, f.name()));
+            projection.add(new ColumnRef(path, f.name(), f));
         }
     }
 
@@ -333,5 +334,5 @@ public final class QueryExecutor {
         RelationGraph.Edge edge;
     }
 
-    private record ColumnRef(String path, String column) {}
+    private record ColumnRef(String path, String column, FieldDef field) {}
 }

@@ -5,8 +5,10 @@ entity:
       id:       { type: long,   pk: true, auto_increment: true }
       username: { type: string, required: true, length: 64 }
       secret:   { type: string, length: 128, readable: false, writable: false }
-      age:      { type: long }
-      status:   { type: long,   default: 1 }
+      age:       { type: long }
+      status:    { type: long,   default: 1 }
+      joined_on: { type: date }
+      last_seen: { type: datetime }
     relations:
       posts:  { kind: has_many, entity: Post,  fk: account_id, on_delete: cascade }
       audits: { kind: has_many, entity: Audit, fk: account_id, on_delete: set_null }

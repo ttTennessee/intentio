@@ -5,11 +5,13 @@ DROP TABLE IF EXISTS token;
 DROP TABLE IF EXISTS account;
 
 CREATE TABLE account (
-    id       BIGINT       NOT NULL AUTO_INCREMENT,
-    username VARCHAR(64)  NOT NULL,
-    secret   VARCHAR(128),
-    age      BIGINT,
-    status   BIGINT       NOT NULL DEFAULT 1,
+    id         BIGINT       NOT NULL AUTO_INCREMENT,
+    username   VARCHAR(64)  NOT NULL,
+    secret     VARCHAR(128),
+    age        BIGINT,
+    status     BIGINT       NOT NULL DEFAULT 1,
+    joined_on  DATE,
+    last_seen  TIMESTAMP,
     PRIMARY KEY (id)
 );
 
