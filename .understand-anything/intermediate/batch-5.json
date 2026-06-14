@@ -1,0 +1,484 @@
+{
+  "nodes": [
+    {
+      "id": "config:engine-core/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "engine-core/pom.xml",
+      "summary": "engine-core 模块的 Maven 构建配置，声明 SnakeYAML、JGraphT、jOOQ 等核心依赖及 JUnit 测试依赖。",
+      "tags": ["configuration", "build-system", "maven", "engine-core"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "file",
+      "name": "IntegrityDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "summary": "实体完整性规则的数据模型，封装 onCreate/onUpdate/onDelete 生命周期规则及字段级校验映射，并提供空实例工厂方法。",
+      "tags": ["data-model", "schema", "validation", "record"],
+      "complexity": "simple",
+      "languageNotes": "Java record 紧凑构造器对 null 集合进行防御性拷贝。"
+    },
+    {
+      "id": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "file",
+      "name": "SchemaLoaderTest.java",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "summary": "SchemaLoader 的集成测试，验证 YAML 实体模式加载、字段解析、关系映射、完整性规则及关系图构建。",
+      "tags": ["test", "schema", "validation", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "class",
+      "name": "SchemaLoaderTest",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [10, 94],
+      "summary": "JUnit 5 测试类，覆盖处方领域实体模式的加载与解析全流程。",
+      "tags": ["test", "schema", "integration"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "function",
+      "name": "parsesFieldsCorrectly",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [25, 49],
+      "summary": "验证 Prescription 与 PrescriptionItem 实体的字段类型、约束及枚举默认值解析是否正确。",
+      "tags": ["test", "validation", "fields"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "function",
+      "name": "parsesRelations",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [51, 62],
+      "summary": "断言 has_many 与 belongs_to 关系定义的目标实体和外键字段解析结果。",
+      "tags": ["test", "relations", "schema"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "function",
+      "name": "parsesIntegrityRules",
+      "filePath": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "lineRange": [64, 83],
+      "summary": "校验 on_create 完整性规则（require_has、stock_check）及字段级规则的参数与消息解析。",
+      "tags": ["test", "validation", "integrity"],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "type": "file",
+      "name": "test-ddl-ext.sql",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "summary": "扩展测试用 DDL 脚本，定义 account、post、comment、audit、token 五张表及外键关联，供引擎集成测试使用。",
+      "tags": ["database", "test", "ddl", "migration"],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "type": "table",
+      "name": "account",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [7, 16],
+      "summary": "用户账户表，包含用户名、密钥、年龄、状态及时间戳字段。",
+      "tags": ["database", "test", "ddl"],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "type": "table",
+      "name": "post",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [18, 23],
+      "summary": "帖子表，通过 account_id 外键关联账户。",
+      "tags": ["database", "test", "ddl"],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "type": "table",
+      "name": "comment",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [25, 30],
+      "summary": "评论表，通过 post_id 外键关联帖子。",
+      "tags": ["database", "test", "ddl"],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "type": "table",
+      "name": "audit",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [32, 37],
+      "summary": "审计日志表，记录账户操作行为。",
+      "tags": ["database", "test", "ddl"],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "type": "table",
+      "name": "token",
+      "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
+      "lineRange": [39, 44],
+      "summary": "令牌表，存储账户关联的认证令牌值。",
+      "tags": ["database", "test", "ddl"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema-ext/account.yml",
+      "type": "config",
+      "name": "account.yml",
+      "filePath": "engine-core/src/test/resources/test-schema-ext/account.yml",
+      "summary": "扩展测试用账户实体 YAML 模式，定义 Account 实体的表映射、字段约束及关联关系。",
+      "tags": ["configuration", "schema-definition", "test", "yaml"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "type": "config",
+      "name": "drug.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/drug.yml",
+      "summary": "药品实体 YAML 模式定义，描述 Drug 实体的表结构与字段属性。",
+      "tags": ["configuration", "schema-definition", "test", "yaml"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "type": "config",
+      "name": "prescription.yml",
+      "filePath": "engine-core/src/test/resources/test-schema/prescription.yml",
+      "summary": "处方领域核心实体模式，定义 Prescription、PrescriptionItem 的字段、关系及库存完整性校验规则。",
+      "tags": ["configuration", "schema-definition", "test", "yaml"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:engine-processor/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "engine-processor/pom.xml",
+      "summary": "engine-processor 注解处理模块的 Maven 配置，依赖 engine-core、JavaPoet 与 Auto Service 以生成编译时代码。",
+      "tags": ["configuration", "build-system", "maven", "annotation-processor"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "type": "file",
+      "name": "NamingUtils.java",
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "summary": "注解处理器内部的命名转换工具类，将驼峰标识符转为大写下划线（UPPER_SNAKE）风格。",
+      "tags": ["utility", "naming", "annotation-processor"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java:NamingUtils",
+      "type": "class",
+      "name": "NamingUtils",
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "lineRange": [3, 27],
+      "summary": "包级私有工具类，提供静态命名转换方法，禁止实例化。",
+      "tags": ["utility", "naming"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java:toUpperSnake",
+      "type": "function",
+      "name": "toUpperSnake",
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "lineRange": [7, 26],
+      "summary": "将驼峰或混合大小写字符串转换为大写下划线格式，保留已有下划线并在大写字母前插入分隔符。",
+      "tags": ["utility", "naming", "string-conversion"],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "type": "file",
+      "name": "ProcessorConfig.java",
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "summary": "注解处理器配置记录类，从编译器选项解析 schema 目录、输出包名、类后缀及字段命名风格等参数。",
+      "tags": ["config", "annotation-processor", "data-model"],
+      "complexity": "simple",
+      "languageNotes": "Java record 配合静态工厂 fromOptions 从 Map 编译选项构建不可变配置。"
+    },
+    {
+      "id": "file:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "type": "file",
+      "name": "ProcessorConfigTest.java",
+      "filePath": "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "summary": "ProcessorConfig 的单元测试，验证启用开关、必填选项校验及默认值解析逻辑。",
+      "tags": ["test", "config", "annotation-processor"],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java:ProcessorConfigTest",
+      "type": "class",
+      "name": "ProcessorConfigTest",
+      "filePath": "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "lineRange": [11, 37],
+      "summary": "JUnit 5 测试类，覆盖 ProcessorConfig.fromOptions 的启用、校验与解析场景。",
+      "tags": ["test", "config"],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java:parsesRequiredOptions",
+      "type": "function",
+      "name": "parsesRequiredOptions",
+      "filePath": "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "lineRange": [25, 36],
+      "summary": "验证完整编译选项下 ProcessorConfig 各字段（schema 目录、输出包、类后缀等）的解析结果。",
+      "tags": ["test", "config", "validation"],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "pom.xml",
+      "summary": "Intentio 多模块 Maven 父 POM，聚合 engine-core、engine-processor、engine-example 子模块并统一管理依赖版本。",
+      "tags": ["configuration", "build-system", "maven", "monorepo"],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "class:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:SchemaLoaderTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "target": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "target": "class:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java:NamingUtils",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "target": "function:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java:toUpperSnake",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "target": "class:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java:ProcessorConfigTest",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "target": "function:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java:parsesRequiredOptions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "target": "file:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java:parsesRequiredOptions",
+      "target": "file:engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesFieldsCorrectly",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesRelations",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java:parsesIntegrityRules",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:pom.xml",
+      "target": "config:engine-core/pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:pom.xml",
+      "target": "config:engine-processor/pom.xml",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/pom.xml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-processor/pom.xml",
+      "target": "file:engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-processor/pom.xml",
+      "target": "file:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema-ext/account.yml",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "target": "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/test/resources/test-ddl-ext.sql",
+      "target": "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "type": "migrates",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+[
+  {
+    "order": 1,
+    "title": "引擎入口：处理管线总览",
+    "description": "SchemaEngine 是整个引擎对外暴露的唯一门面，向调用方提供 execute（写操作）、query（列表查询）和 queryPage（分页查询）三个核心方法。阅读这个类可以一次性看清引擎的完整处理管线：schema 加载 → 字段校验 → 约束检查 → 拓扑排序 → 虚拟机执行，后续各步将逐层展开这条管线上的每一个子系统。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java"
+    ],
+    "languageLesson": "Java 中的 Facade 模式（门面模式）将多个复杂子系统的调用封装在一个高层接口后面，调用方无需了解内部协调细节。SchemaEngine 正是典型的门面：它持有所有子系统的引用，并按固定顺序编排它们的调用。"
+  },
+  {
+    "order": 2,
+    "title": "写操作意图：Op 与批次模型",
+    "description": "Op 是引擎中最核心的数据载体，表示一条写操作意图——insert、update、delete 或 deleteWhere，携带目标实体名、字段键值对及操作类型枚举 OpType。IntentGroup 将多个 Op 组合成一个原子执行批次，是调用方向引擎提交写请求的标准入参。理解 Op 和 IntentGroup 的结构，是理解后续校验、排序、执行各环节的前提。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java"
+    ],
+    "languageLesson": "Java 枚举（enum）不仅能定义常量，还可以附带方法和字段，形成富类型的策略分支。OpType 枚举限制了合法的操作类型集合，让编译器在编译期排除非法操作，而非推迟到运行时检查。"
+  },
+  {
+    "order": 3,
+    "title": "查询意图：Builder 模式封装",
+    "description": "QueryIntent 以 Builder 模式封装查询请求，支持指定目标实体、选取字段列表、添加 Filter 过滤条件（通过 FilterOp 枚举表达 =、!=、LIKE、IN 等操作符）以及 Order 排序项。这种设计让查询意图的构建具有良好的可读性，与写操作意图（Op）共同构成了引擎的「意图模型层」——一切交互都以高层业务意图而非原始 SQL 来表达。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java"
+    ],
+    "languageLesson": "Builder 模式通过链式方法调用（method chaining）逐步构造复杂对象，避免了多参数构造函数带来的可读性问题。Java record 则以极简语法定义不可变数据载体，Filter 和 Order 都是 record 的典型应用场景。"
+  },
+  {
+    "order": 4,
+    "title": "Schema 领域模型：实体、字段与关系",
+    "description": "EntityDef 是实体 schema 的核心数据结构，聚合了该实体的字段列表（FieldDef）、关联关系（RelationDef）以及完整性约束（IntegrityDef）。FieldDef 描述字段的类型、是否必填、默认值等元数据，是后续 Validator 校验的依据；RelationDef 则描述实体间的外键关系，驱动 ConstraintEngine 的引用检查逻辑。这一层是整个引擎的「知识库」，所有运行时决策都以它为参照。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java"
+    ]
+  },
+  {
+    "order": 5,
+    "title": "Schema 加载：YAML 配置到注册表",
+    "description": "SchemaLoader 负责从文件系统目录或 classpath 扫描并解析 YAML 格式的 schema 文件，将它们反序列化为 EntityDef 对象后注入 SchemaRegistry。SchemaRegistry 以实体名称为键维护全局索引，供 Validator、ConstraintEngine、QueryExecutor 等子系统在运行时按名查找。drug.yml 和 prescription.yml 是真实的业务 schema 示例，展示了字段定义、关联关系和完整性规则的 YAML 写法，是理解 schema 格式的最佳切入点。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "config:engine-core/src/test/resources/test-schema/prescription.yml"
+    ],
+    "languageLesson": "YAML schema 是一种「声明式配置」——开发者只需描述实体的结构和规则，引擎负责解释执行。这种模式将业务知识与引擎代码解耦，新增实体无需修改任何 Java 代码，只需添加一个 YAML 文件。"
+  },
+  {
+    "order": 6,
+    "title": "字段校验：意图数据合法性检查",
+    "description": "Validator 在操作意图进入执行管线前进行第一道防线：根据 SchemaRegistry 中加载的 FieldDef 元数据，逐字段检查 Op 中的数据是否符合类型约束、必填要求等规则。SchemaRegistry 在此作为只读索引被所有校验和约束子系统共享——这正是它 fan-in 最高（被 5 个模块直接依赖）的原因。校验失败的意图会被提前拦截，不会进入后续的拓扑排序和 SQL 执行流程。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+    ]
+  },
+  {
+    "order": 7,
+    "title": "业务约束引擎：引用、数量与库存",
+    "description": "ConstraintEngine 是第二道防线，在字段校验通过后执行业务级完整性检查。它编排三类规则：RefCheckRule 验证外键引用是否指向数据库中真实存在的记录，RequireHasRule 检查关联数量约束（如「处方必须至少有一个药品」），StockCheckRule 在库存扣减场景下确保库存充足。这些规则围绕 IntegrityDef 中声明的约束配置动态派发，新增业务规则只需实现规则接口并注册，无需修改引擎主流程。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java"
+    ],
+    "languageLesson": "这是一种策略模式（Strategy Pattern）的变体：ConstraintEngine 是「上下文」，各 *Rule 类是「策略」。通过将规则抽象为独立类而非 if-else 分支，系统具备了「对扩展开放、对修改关闭」的 OCP（开闭原则）特性。"
+  },
+  {
+    "order": 8,
+    "title": "跨操作引用与拓扑排序",
+    "description": "当一个 IntentGroup 中的多个 Op 存在字段引用关系时（例如新建订单的 order_id 字段引用了同批次中新建客户的自增主键），TopologySorter 会先通过 ReferenceParser 解析所有占位符引用表达式，再基于 Kahn 算法构建依赖有向图并完成拓扑排序，确保被引用的 Op 先执行。若存在循环引用则提前报错，从根本上保证了批次操作的执行顺序正确性。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+    ],
+    "languageLesson": "Kahn 算法是拓扑排序的经典实现：维护一个入度为 0 的节点队列，每次取出一个节点并「消除」它对后继节点的入度贡献，重复直至队列为空。若最终处理节点数少于总节点数，说明存在环路。时间复杂度为 O(V+E)，非常适合在运行时对小规模依赖图排序。"
+  },
+  {
+    "order": 9,
+    "title": "批次执行虚拟机",
+    "description": "VirtualMachine 接收拓扑排序后的 Op 序列并驱动执行：ReferenceResolver 在每个 Op 执行前将占位符替换为前序操作产生的实际数据库值（如自增 ID），PendingRow 在内存中暂存尚未落库的行状态；Executor 最终将每个 Op 转译为带参数绑定的 JDBC 预处理语句（PreparedStatement）并执行，同时通过 SqlLogger 记录结构化 SQL 日志。这一层是引擎「意图 → SQL」转译链的终点。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+      "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java"
+    ],
+    "languageLesson": "JDBC PreparedStatement 将 SQL 结构与参数值分离传输：数据库可以缓存已解析的执行计划，后续相同结构的语句直接复用，既提升性能又从根本上防止 SQL 注入攻击。"
+  },
+  {
+    "order": 10,
+    "title": "查询执行与结果封装",
+    "description": "QueryExecutor 接收 QueryIntent，根据 SchemaRegistry 中的实体定义动态拼接带 JOIN/WHERE/ORDER BY 子句的参数化 SQL 并执行，将 JDBC ResultSet 映射为 QueryResult（行集合）或 PageResult（分页结果 record）。写操作的执行结果由 IntentResult 封装，包含成功/失败状态和 IntentError 错误详情。至此，引擎的写路径与查询路径均已闭环——调用方始终以高层意图对象为输入，以强类型结果对象为输出，无需接触任何 SQL。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java"
+    ]
+  },
+  {
+    "order": 11,
+    "title": "JDBC 值类型转换",
+    "description": "JdbcValueCoercer 负责将 JDBC ResultSet 中的日期时间类型（java.sql.Date/Timestamp/Time）与 Java 8 时间 API（LocalDate/LocalDateTime/Instant 等）之间进行双向转换，确保 QueryExecutor 和 Executor 在读写数据库时类型一致。",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java"
+    ]
+  },
+  {
+    "order": 12,
+    "title": "编译期 TableDef 代码生成",
+    "description": "engine-processor 模块通过 SchemaTableDefProcessor（JSR-269 注解处理器）在编译期读取 Schema YAML 定义，由 TableDefGenerator 使用 JavaPoet 生成类型安全的 TableDef 类，实现 schema 到 Java 代码的自动化映射，减少手写 boilerplate。",
+    "nodeIds": [
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java",
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java"
+    ],
+    "languageLesson": "Java Annotation Processing（JSR-269）允许在编译期扫描源码中的注解并生成额外的 .java 文件。配合 Auto Service 自动注册 Processor，无需手动配置 META-INF/services。"
+  }
+]

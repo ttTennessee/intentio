@@ -1,0 +1,1004 @@
+{
+  "nodes": [
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "type": "file",
+      "name": "Executor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "summary": "意图引擎的写操作执行器，负责将 Op 意图翻译为 INSERT/UPDATE/DELETE SQL 并在 JDBC 连接上执行，含级联删除与参数绑定逻辑。",
+      "tags": [
+        "service",
+        "jdbc",
+        "data-model",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "class",
+      "name": "Executor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        30,
+        204
+      ],
+      "summary": "封装写操作执行流程的核心类，持有 SchemaRegistry 并按 Op 类型分发到插入、更新或级联删除实现。",
+      "tags": [
+        "service",
+        "jdbc",
+        "factory"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "function",
+      "name": "execute",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        40,
+        53
+      ],
+      "summary": "根据 Op 类型路由到 doInsert、doUpdate 或 doDelete，是写操作的统一入口。",
+      "tags": [
+        "entry-point",
+        "service"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "function",
+      "name": "doInsert",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        55,
+        83
+      ],
+      "summary": "构建 INSERT 语句，处理自增主键、默认值与生成键，并通过 bindParam 绑定列值后执行。",
+      "tags": [
+        "jdbc",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "function",
+      "name": "doUpdate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        85,
+        100
+      ],
+      "summary": "根据已解析字段构建 UPDATE 语句，绑定列值与目标 ID 后执行更新。",
+      "tags": [
+        "jdbc",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:cascadeDelete",
+      "type": "function",
+      "name": "cascadeDelete",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        113,
+        138
+      ],
+      "summary": "按实体关系图递归级联删除子记录，支持 CASCADE、SET NULL 与 RESTRICT 等 onDelete 策略。",
+      "tags": [
+        "jdbc",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:childIdsByFk",
+      "type": "function",
+      "name": "childIdsByFk",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        140,
+        153
+      ],
+      "summary": "通过外键列查询子表中匹配父 ID 集合的子记录 ID 列表。",
+      "tags": [
+        "jdbc",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "function",
+      "name": "bindParam",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "lineRange": [
+        180,
+        203
+      ],
+      "summary": "按 FieldDef 类型将 Java 值转换为 JDBC 参数，处理 null、数值、日期、字符串与布尔等类型。",
+      "tags": [
+        "jdbc",
+        "validation",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "type": "file",
+      "name": "Filter.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "summary": "查询过滤条件记录类型，描述字段名、比较运算符与过滤值，供 QueryExecutor 构建 WHERE 子句。",
+      "tags": [
+        "data-model",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "type": "file",
+      "name": "Order.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "summary": "查询排序记录类型，包含排序字段与升序/降序标志，供 QueryExecutor 构建 ORDER BY 子句。",
+      "tags": [
+        "data-model",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "type": "file",
+      "name": "JdbcValueCoercer.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "summary": "JDBC 结果值类型转换工具，将数据库返回的 Object 按 FieldDef 或 FieldType 规范化为 Java 日期与时间类型。",
+      "tags": [
+        "utility",
+        "jdbc",
+        "serialization"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用私有构造器实现不可实例化的工具类模式。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:JdbcValueCoercer",
+      "type": "class",
+      "name": "JdbcValueCoercer",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "lineRange": [
+        17,
+        78
+      ],
+      "summary": "不可实例化的 JDBC 值转换工具类，提供 coerce 重载及日期/日期时间专用转换方法。",
+      "tags": [
+        "utility",
+        "jdbc",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerce",
+      "type": "function",
+      "name": "coerce",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "lineRange": [
+        24,
+        40
+      ],
+      "summary": "按 FieldDef 或 FieldType 将 JDBC 返回值转换为对应的 Java 类型，日期类走专用分支。",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerceDate",
+      "type": "function",
+      "name": "coerceDate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "lineRange": [
+        42,
+        56
+      ],
+      "summary": "将多种日期表示（Date、Timestamp、sql.Date、字符串）统一转换为 LocalDate。",
+      "tags": [
+        "utility",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "type": "file",
+      "name": "QueryExecutor.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "summary": "查询执行器，将 QueryIntent 翻译为带 JOIN、WHERE、ORDER BY 与分页的 SQL，折叠结果行并组装嵌套关联结构。",
+      "tags": [
+        "service",
+        "jdbc",
+        "api-handler"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "class",
+      "name": "QueryExecutor",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        32,
+        338
+      ],
+      "summary": "持有 SchemaRegistry 的查询执行核心类，负责 SQL 规划、执行与结果行折叠。",
+      "tags": [
+        "service",
+        "jdbc"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "function",
+      "name": "run",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        42,
+        108
+      ],
+      "summary": "根据 QueryIntent 规划 JOIN、构建 SELECT/WHERE/ORDER BY/LIMIT 子句，执行查询并折叠为 QueryResult。",
+      "tags": [
+        "entry-point",
+        "service",
+        "jdbc"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "function",
+      "name": "runPage",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        114,
+        137
+      ],
+      "summary": "先执行 COUNT 查询获取总数，再调用 run 获取分页数据，封装为 PageResult。",
+      "tags": [
+        "service",
+        "jdbc"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "function",
+      "name": "appendWhere",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        140,
+        167
+      ],
+      "summary": "将 Filter 列表与 OR 分组追加为 WHERE 子句，校验列名并收集绑定参数。",
+      "tags": [
+        "jdbc",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "type": "function",
+      "name": "appendCondition",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        177,
+        205
+      ],
+      "summary": "按 Filter 运算符（=、!=、>、<、IN、LIKE 等）生成单条 SQL 条件片段与参数。",
+      "tags": [
+        "jdbc",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:toList",
+      "type": "function",
+      "name": "toList",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        207,
+        217
+      ],
+      "summary": "将 IN 运算符的过滤值规范化为 List，支持数组与单值输入。",
+      "tags": [
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "function",
+      "name": "foldRow",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        219,
+        254
+      ],
+      "summary": "将扁平 SQL 结果行按列投影折叠为嵌套 Map 结构，处理一对多与多对一关联的合并。",
+      "tags": [
+        "serialization",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "function",
+      "name": "locate",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        256,
+        272
+      ],
+      "summary": "沿关联路径在已折叠的行树中定位父节点，用于挂载子关联数据。",
+      "tags": [
+        "utility",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "function",
+      "name": "planJoins",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        274,
+        304
+      ],
+      "summary": "根据 QueryIntent.includes 与 RelationGraph 规划 LEFT JOIN 节点序列与表别名映射。",
+      "tags": [
+        "jdbc",
+        "data-model"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendColumns",
+      "type": "function",
+      "name": "appendColumns",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "lineRange": [
+        310,
+        326
+      ],
+      "summary": "按实体字段定义追加 SELECT 列清单与 AS 别名，并记录 ColumnRef 投影信息。",
+      "tags": [
+        "jdbc",
+        "data-model"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "type": "file",
+      "name": "PageResult.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "summary": "分页查询结果记录类型，包含总行数 total 与当前页 rows 列表。",
+      "tags": [
+        "data-model",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "file",
+      "name": "FieldDef.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "summary": "实体字段元数据记录，描述列名、类型、主键、可读性、默认值与自增等属性。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "file",
+      "name": "FieldType.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "summary": "字段类型枚举，定义 LONG、STRING、DECIMAL、DATE、DATETIME、BOOLEAN 等可解析类型。",
+      "tags": [
+        "data-model",
+        "schema-definition",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "file",
+      "name": "RelationGraph.java",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "summary": "基于 JGraphT 的实体关系有向图，从 SchemaRegistry 构建并提供关系路径解析能力。",
+      "tags": [
+        "data-model",
+        "schema-definition"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "使用 JGraphT DefaultDirectedGraph 建模实体间关系边。"
+    },
+    {
+      "id": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "class",
+      "name": "RelationGraph",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        9,
+        74
+      ],
+      "summary": "封装实体关系有向图，提供从 SchemaRegistry 构建图及按关系名路径遍历的能力。",
+      "tags": [
+        "data-model",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "function",
+      "name": "build",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        32,
+        49
+      ],
+      "summary": "遍历 SchemaRegistry 中所有实体与关系，构建包含 Edge 元数据的有向关系图。",
+      "tags": [
+        "factory",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "function",
+      "name": "path",
+      "filePath": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "lineRange": [
+        53,
+        73
+      ],
+      "summary": "按点分隔的关系名路径（如 author.books）从起始实体解析出 Edge 序列。",
+      "tags": [
+        "utility",
+        "schema-definition"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:cascadeDelete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:childIdsByFk",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:JdbcValueCoercer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerce",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerceDate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:toList",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendColumns",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:Executor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:JdbcValueCoercer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerce",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:QueryExecutor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "class:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:RelationGraph",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:build",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:execute",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doInsert",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:doUpdate",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:cascadeDelete",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:childIdsByFk",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/execute/Executor.java:bindParam",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/validate/Validator.java:toBigDecimal",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerce",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerceDate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendColumns",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:runPage",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:run",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendWhere",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:appendCondition",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:toList",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:locate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:foldRow",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java:coerce",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java:planJoins",
+      "target": "function:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java:path",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
+}

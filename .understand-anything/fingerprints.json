@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "35daea91267e565a194f865f9dba6ee3cfa54c27",
-  "generatedAt": "2026-06-13T07:24:04.190Z",
+  "gitCommitHash": "db5ab5506e6858d2ed067f911a5ef08b1ad551d0",
+  "generatedAt": "2026-06-14T16:08:51.968Z",
   "files": {
     "engine-core/pom.xml": {
       "filePath": "engine-core/pom.xml",
@@ -768,7 +768,7 @@
     },
     "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": {
       "filePath": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
-      "contentHash": "d6ab9afd2ac46823d00e4ac7b81f03a61e9b2a4bbb8b5f533ba5fb42f12096a4",
+      "contentHash": "f00ba0aa51cb820b894340f51635aff3902316c8ad4d2596e08f327f704509d3",
       "functions": [
         {
           "name": "Executor",
@@ -787,7 +787,7 @@
           ],
           "returnType": "Object",
           "exported": true,
-          "lineCount": 7
+          "lineCount": 14
         },
         {
           "name": "doInsert",
@@ -807,7 +807,7 @@
             "fields",
             "conn"
           ],
-          "returnType": "void",
+          "returnType": "int",
           "exported": false,
           "lineCount": 16
         },
@@ -912,7 +912,7 @@
             "registry"
           ],
           "exported": true,
-          "lineCount": 168
+          "lineCount": 175
         }
       ],
       "imports": [
@@ -1072,7 +1072,7 @@
         "execute",
         "Executor"
       ],
-      "totalLines": 198,
+      "totalLines": 205,
       "hasStructuralAnalysis": true
     },
     "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": {
@@ -1775,6 +1775,140 @@
       "totalLines": 30,
       "hasStructuralAnalysis": true
     },
+    "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java": {
+      "filePath": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+      "contentHash": "5e0967b802b34dbe3224eaaf423a1693bff6d04e31b08c3ab8839772ecfd6128",
+      "functions": [
+        {
+          "name": "JdbcValueCoercer",
+          "params": [],
+          "exported": true,
+          "lineCount": 1
+        },
+        {
+          "name": "coerce",
+          "params": [
+            "value",
+            "def"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "coerce",
+          "params": [
+            "value",
+            "type"
+          ],
+          "returnType": "Object",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "coerceDate",
+          "params": [
+            "value"
+          ],
+          "returnType": "LocalDate",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "coerceDateTime",
+          "params": [
+            "value"
+          ],
+          "returnType": "LocalDateTime",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "parseDateTimeString",
+          "params": [
+            "s"
+          ],
+          "returnType": "LocalDateTime",
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [
+        {
+          "name": "JdbcValueCoercer",
+          "methods": [
+            "JdbcValueCoercer",
+            "coerce",
+            "coerce",
+            "coerceDate",
+            "coerceDateTime",
+            "parseDateTimeString"
+          ],
+          "properties": [
+            "SQL_DATETIME"
+          ],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.schema.FieldDef",
+          "specifiers": [
+            "FieldDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.FieldType",
+          "specifiers": [
+            "FieldType"
+          ]
+        },
+        {
+          "source": "java.sql.Timestamp",
+          "specifiers": [
+            "Timestamp"
+          ]
+        },
+        {
+          "source": "java.time.LocalDate",
+          "specifiers": [
+            "LocalDate"
+          ]
+        },
+        {
+          "source": "java.time.LocalDateTime",
+          "specifiers": [
+            "LocalDateTime"
+          ]
+        },
+        {
+          "source": "java.time.format.DateTimeFormatter",
+          "specifiers": [
+            "DateTimeFormatter"
+          ]
+        },
+        {
+          "source": "java.time.format.DateTimeParseException",
+          "specifiers": [
+            "DateTimeParseException"
+          ]
+        },
+        {
+          "source": "java.util.Date",
+          "specifiers": [
+            "Date"
+          ]
+        }
+      ],
+      "exports": [
+        "coerce",
+        "coerce",
+        "JdbcValueCoercer"
+      ],
+      "totalLines": 79,
+      "hasStructuralAnalysis": true
+    },
     "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java": {
       "filePath": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
       "contentHash": "8514a68f814f644cc0ace78c263cce9b5eb15fdc78305f249430dff3b9e0f191",
@@ -1868,7 +2002,7 @@
     },
     "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": {
       "filePath": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
-      "contentHash": "d2b137f54d80f91865176e1a3743fc947db753aee8138c5830979760d19b6b09",
+      "contentHash": "47a25457df9cd1f632dadb0308ecfbb28ae704a7fd9faf6bb1643a9ee5556b56",
       "functions": [
         {
           "name": "QueryExecutor",
@@ -2014,6 +2148,12 @@
         }
       ],
       "imports": [
+        {
+          "source": "com.intentio.engine.jdbc.JdbcValueCoercer",
+          "specifiers": [
+            "JdbcValueCoercer"
+          ]
+        },
         {
           "source": "com.intentio.engine.intent.Filter",
           "specifiers": [
@@ -2177,7 +2317,7 @@
         "runPage",
         "QueryExecutor"
       ],
-      "totalLines": 338,
+      "totalLines": 339,
       "hasStructuralAnalysis": true
     },
     "engine-core/src/main/java/com/intentio/engine/result/IntentError.java": {
@@ -2785,7 +2925,7 @@
     },
     "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": {
       "filePath": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
-      "contentHash": "3978b8dc3f01d69aab7d62f7381b9d80de56ad3c644b6565d2bdddd151be7b41",
+      "contentHash": "1595197c0ad2228abe02d0e2d9f1c504b2410e93d185935187cf1688562fff27",
       "functions": [
         {
           "name": "SchemaEngine",
@@ -2914,6 +3054,12 @@
           "source": "com.intentio.engine.intent.Op",
           "specifiers": [
             "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.OpType",
+          "specifiers": [
+            "OpType"
           ]
         },
         {
@@ -3058,7 +3204,7 @@
         "queryPage",
         "SchemaEngine"
       ],
-      "totalLines": 182,
+      "totalLines": 183,
       "hasStructuralAnalysis": true
     },
     "engine-core/src/main/java/com/intentio/engine/validate/Validator.java": {
@@ -3781,6 +3927,143 @@
       "totalLines": 104,
       "hasStructuralAnalysis": true
     },
+    "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java": {
+      "filePath": "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java",
+      "contentHash": "4000cdd11508768fe37581fa5ce8542146d5e8161a9e03a1965944648e4a8ba4",
+      "functions": [
+        {
+          "name": "setUp",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "unitCoercesJdbcDateTypes",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "queryReturnsLocalDateAndLocalDateTime",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 18
+        }
+      ],
+      "classes": [
+        {
+          "name": "JdbcValueCoercerTest",
+          "methods": [
+            "setUp",
+            "unitCoercesJdbcDateTypes",
+            "queryReturnsLocalDateAndLocalDateTime"
+          ],
+          "properties": [
+            "fx"
+          ],
+          "exported": false,
+          "lineCount": 40
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.intent.IntentGroup",
+          "specifiers": [
+            "IntentGroup"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.Op",
+          "specifiers": [
+            "Op"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.intent.QueryIntent",
+          "specifiers": [
+            "QueryIntent"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.IntentResult",
+          "specifiers": [
+            "IntentResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.result.QueryResult",
+          "specifiers": [
+            "QueryResult"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.support.H2Fixture",
+          "specifiers": [
+            "H2Fixture"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.BeforeEach",
+          "specifiers": [
+            "BeforeEach"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Test",
+          "specifiers": [
+            "Test"
+          ]
+        },
+        {
+          "source": "java.sql.Date",
+          "specifiers": [
+            "Date"
+          ]
+        },
+        {
+          "source": "java.sql.Timestamp",
+          "specifiers": [
+            "Timestamp"
+          ]
+        },
+        {
+          "source": "java.time.LocalDate",
+          "specifiers": [
+            "LocalDate"
+          ]
+        },
+        {
+          "source": "java.time.LocalDateTime",
+          "specifiers": [
+            "LocalDateTime"
+          ]
+        },
+        {
+          "source": "java.util.LinkedHashMap",
+          "specifiers": [
+            "LinkedHashMap"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions",
+          "specifiers": [
+            "*"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
     "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java": {
       "filePath": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
       "contentHash": "706cdfa761b2edad6683e5d62f35ff2e62af88997e52105907c3fd9302b9b4c0",
@@ -4311,22 +4594,22 @@
     },
     "engine-core/src/test/resources/test-ddl-ext.sql": {
       "filePath": "engine-core/src/test/resources/test-ddl-ext.sql",
-      "contentHash": "a1e45c585307b8b3a0cd6d077299a71b83e6662cfa947d6efab5083ead1eff55",
-      "functions": [],
-      "classes": [],
-      "imports": [],
-      "exports": [],
-      "totalLines": 43,
-      "hasStructuralAnalysis": true
-    },
-    "engine-core/src/test/resources/test-schema-ext/account.yml": {
-      "filePath": "engine-core/src/test/resources/test-schema-ext/account.yml",
-      "contentHash": "9cb2377bcccc5e3ff19bbc3b041c52f0e3f4925ff48fd9751dfa0a461dd3abae",
+      "contentHash": "b763f5509ee4911ee23fb3111e8670423b0b0835143ca4ca8a868b178294e014",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
       "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "engine-core/src/test/resources/test-schema-ext/account.yml": {
+      "filePath": "engine-core/src/test/resources/test-schema-ext/account.yml",
+      "contentHash": "08c4f899d6f9f871ae53deb4e553349e637c705020e24b7f6f007402a7d31e00",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 47,
       "hasStructuralAnalysis": true
     },
     "engine-core/src/test/resources/test-schema/drug.yml": {
@@ -4349,14 +4632,549 @@
       "totalLines": 35,
       "hasStructuralAnalysis": true
     },
-    "pom.xml": {
-      "filePath": "pom.xml",
-      "contentHash": "59745ef066ab40bf92926d732fddcb7e2f07cf59495aa167287a5497602816d1",
+    "engine-processor/pom.xml": {
+      "filePath": "engine-processor/pom.xml",
+      "contentHash": "d4cc6800a0d3ef51848d7c0daf3343290cdec85efc13b8418d821d45f6621e49",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 106,
+      "totalLines": 55,
+      "hasStructuralAnalysis": false
+    },
+    "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java": {
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "contentHash": "e4a3b18b681807db85ceb23a12775461fb5a725574a553e7830af4defd6069eb",
+      "functions": [
+        {
+          "name": "NamingUtils",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "toUpperSnake",
+          "params": [
+            "name"
+          ],
+          "returnType": "String",
+          "exported": false,
+          "lineCount": 20
+        }
+      ],
+      "classes": [
+        {
+          "name": "NamingUtils",
+          "methods": [
+            "NamingUtils",
+            "toUpperSnake"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 25
+        }
+      ],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java": {
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "contentHash": "1bdfeac84847917f0e5545094fbc3b7e0a845896f87dfff1ef6d9590d4213af0",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java": {
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java",
+      "contentHash": "5c9441f62bf4204223b0066b8ec354e816c8dde045149452183b498cd42b6954",
+      "functions": [
+        {
+          "name": "getSupportedSourceVersion",
+          "params": [],
+          "returnType": "SourceVersion",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "process",
+          "params": [
+            "annotations",
+            "roundEnv"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 48
+        }
+      ],
+      "classes": [
+        {
+          "name": "SchemaTableDefProcessor",
+          "methods": [
+            "getSupportedSourceVersion",
+            "process"
+          ],
+          "properties": [
+            "generated"
+          ],
+          "exported": true,
+          "lineCount": 68
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.google.auto.service.AutoService",
+          "specifiers": [
+            "AutoService"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaLoader",
+          "specifiers": [
+            "SchemaLoader"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.JavaFile",
+          "specifiers": [
+            "JavaFile"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.AbstractProcessor",
+          "specifiers": [
+            "AbstractProcessor"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.Filer",
+          "specifiers": [
+            "Filer"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.FilerException",
+          "specifiers": [
+            "FilerException"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.Processor",
+          "specifiers": [
+            "Processor"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.RoundEnvironment",
+          "specifiers": [
+            "RoundEnvironment"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.SupportedAnnotationTypes",
+          "specifiers": [
+            "SupportedAnnotationTypes"
+          ]
+        },
+        {
+          "source": "javax.annotation.processing.SupportedOptions",
+          "specifiers": [
+            "SupportedOptions"
+          ]
+        },
+        {
+          "source": "javax.lang.model.SourceVersion",
+          "specifiers": [
+            "SourceVersion"
+          ]
+        },
+        {
+          "source": "javax.lang.model.element.TypeElement",
+          "specifiers": [
+            "TypeElement"
+          ]
+        },
+        {
+          "source": "javax.tools.Diagnostic",
+          "specifiers": [
+            "Diagnostic"
+          ]
+        },
+        {
+          "source": "java.io.IOException",
+          "specifiers": [
+            "IOException"
+          ]
+        },
+        {
+          "source": "java.util.Set",
+          "specifiers": [
+            "Set"
+          ]
+        }
+      ],
+      "exports": [
+        "getSupportedSourceVersion",
+        "process",
+        "SchemaTableDefProcessor"
+      ],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java": {
+      "filePath": "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java",
+      "contentHash": "a0260f8c8ab2813d60132cebac2040fa5c401c9fcc731808ec056dfbe7b5eb47",
+      "functions": [
+        {
+          "name": "generate",
+          "params": [
+            "registry",
+            "config"
+          ],
+          "returnType": "List<JavaFile>",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "buildTableDef",
+          "params": [
+            "entity",
+            "config"
+          ],
+          "returnType": "JavaFile",
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "buildFieldsType",
+          "params": [
+            "entity"
+          ],
+          "returnType": "TypeSpec",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "buildRelationsType",
+          "params": [
+            "entity"
+          ],
+          "returnType": "TypeSpec",
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "buildTablesAggregator",
+          "params": [
+            "entities",
+            "config"
+          ],
+          "returnType": "JavaFile",
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "stringField",
+          "params": [
+            "constantName",
+            "value",
+            "javadoc"
+          ],
+          "returnType": "FieldSpec",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "privateConstructor",
+          "params": [],
+          "returnType": "MethodSpec",
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [
+        {
+          "name": "TableDefGenerator",
+          "methods": [
+            "generate",
+            "buildTableDef",
+            "buildFieldsType",
+            "buildRelationsType",
+            "buildTablesAggregator",
+            "stringField",
+            "privateConstructor"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 105
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.schema.EntityDef",
+          "specifiers": [
+            "EntityDef"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.ClassName",
+          "specifiers": [
+            "ClassName"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.FieldSpec",
+          "specifiers": [
+            "FieldSpec"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.JavaFile",
+          "specifiers": [
+            "JavaFile"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.MethodSpec",
+          "specifiers": [
+            "MethodSpec"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.TypeSpec",
+          "specifiers": [
+            "TypeSpec"
+          ]
+        },
+        {
+          "source": "javax.lang.model.element.Modifier",
+          "specifiers": [
+            "Modifier"
+          ]
+        },
+        {
+          "source": "java.util.ArrayList",
+          "specifiers": [
+            "ArrayList"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        }
+      ],
+      "exports": [
+        "generate",
+        "TableDefGenerator"
+      ],
+      "totalLines": 121,
+      "hasStructuralAnalysis": true
+    },
+    "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java": {
+      "filePath": "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "contentHash": "1c20dbccd392acfcecc6e9b86aeef4d658813e6f6d3d466ef009ffb3999153d1",
+      "functions": [
+        {
+          "name": "disabledWhenEnableFalse",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "requiresSchemaDirAndOutputPackage",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "parsesRequiredOptions",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [
+        {
+          "name": "ProcessorConfigTest",
+          "methods": [
+            "disabledWhenEnableFalse",
+            "requiresSchemaDirAndOutputPackage",
+            "parsesRequiredOptions"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 27
+        }
+      ],
+      "imports": [
+        {
+          "source": "org.junit.jupiter.api.Test",
+          "specifiers": [
+            "Test"
+          ]
+        },
+        {
+          "source": "java.util.Map",
+          "specifiers": [
+            "Map"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions.assertFalse",
+          "specifiers": [
+            "assertFalse"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions.assertThrows",
+          "specifiers": [
+            "assertThrows"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions.assertTrue",
+          "specifiers": [
+            "assertTrue"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java": {
+      "filePath": "engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java",
+      "contentHash": "904e72345d34e79dccac213af2e9d47c8e73614c2d68387e2b949811b7c93797",
+      "functions": [
+        {
+          "name": "generatesEntityTableFieldAndRelationConstants",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 30
+        },
+        {
+          "name": "generatesTablesAggregatorWhenEnabled",
+          "params": [],
+          "returnType": "void",
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [
+        {
+          "name": "TableDefGeneratorTest",
+          "methods": [
+            "generatesEntityTableFieldAndRelationConstants",
+            "generatesTablesAggregatorWhenEnabled"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 57
+        }
+      ],
+      "imports": [
+        {
+          "source": "com.intentio.engine.schema.SchemaLoader",
+          "specifiers": [
+            "SchemaLoader"
+          ]
+        },
+        {
+          "source": "com.intentio.engine.schema.SchemaRegistry",
+          "specifiers": [
+            "SchemaRegistry"
+          ]
+        },
+        {
+          "source": "com.squareup.javapoet.JavaFile",
+          "specifiers": [
+            "JavaFile"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Test",
+          "specifiers": [
+            "Test"
+          ]
+        },
+        {
+          "source": "java.io.IOException",
+          "specifiers": [
+            "IOException"
+          ]
+        },
+        {
+          "source": "java.nio.file.Path",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "java.util.List",
+          "specifiers": [
+            "List"
+          ]
+        },
+        {
+          "source": "org.junit.jupiter.api.Assertions.assertTrue",
+          "specifiers": [
+            "assertTrue"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": true
+    },
+    "pom.xml": {
+      "filePath": "pom.xml",
+      "contentHash": "fba2f8bff42e7c55d6553e7805e8df8bcf83c0e4de69d1ed159081a2cea7af08",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 124,
       "hasStructuralAnalysis": false
     }
   }

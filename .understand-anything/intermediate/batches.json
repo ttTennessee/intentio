@@ -1,0 +1,1186 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 55,
+  "totalBatches": 4,
+  "exportsByPath": {
+    "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java": [
+      "ConstraintEngine",
+      "checkPre",
+      "checkPost",
+      "ConstraintEngine"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java": [
+      "RefCheckRule",
+      "check",
+      "existsInDb",
+      "RefCheckRule"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java": [
+      "RequireHasRule",
+      "check",
+      "RequireHasRule"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java": [
+      "StockCheckRule",
+      "check",
+      "StockCheckRule"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java": [
+      "resolveIds",
+      "DeleteTargets"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": [
+      "Executor",
+      "execute",
+      "Executor"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": [
+      "sort",
+      "TopologySorter"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/intent/Filter.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/Op.java": [
+      "insert",
+      "update",
+      "delete",
+      "deleteWhere",
+      "as",
+      "trusted",
+      "type",
+      "entity",
+      "fields",
+      "name",
+      "targetId",
+      "conditions",
+      "isTrusted",
+      "setField",
+      "Op"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/intent/OpType.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/Order.java": [],
+    "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java": [
+      "from",
+      "include",
+      "filter",
+      "filter",
+      "filterAnyOf",
+      "orderBy",
+      "orderBy",
+      "orderByDesc",
+      "select",
+      "limit",
+      "offset",
+      "entity",
+      "includes",
+      "filters",
+      "orGroups",
+      "orders",
+      "select",
+      "limit",
+      "offset",
+      "QueryIntent"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java": [
+      "isReference",
+      "parse",
+      "ReferenceParser"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java": [
+      "coerce",
+      "coerce",
+      "JdbcValueCoercer"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java": [
+      "sql",
+      "sql",
+      "SqlLogger"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": [
+      "QueryExecutor",
+      "run",
+      "runPage",
+      "QueryExecutor"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/result/IntentError.java": [],
+    "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java": [],
+    "engine-core/src/main/java/com/intentio/engine/result/PageResult.java": [],
+    "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java": [
+      "build",
+      "raw",
+      "path",
+      "RelationGraph"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/schema/Rule.java": [],
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java": [
+      "loadDirectory",
+      "loadClasspath",
+      "SchemaLoader"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java": [
+      "of",
+      "find",
+      "require",
+      "entities",
+      "relationGraph",
+      "SchemaRegistry"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": [
+      "load",
+      "loadClasspath",
+      "registry",
+      "execute",
+      "query",
+      "queryPage",
+      "SchemaEngine"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/validate/Validator.java": [
+      "Validator",
+      "validate",
+      "toBigDecimal",
+      "Validator"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java": [
+      "PendingRow",
+      "entity",
+      "fields",
+      "generatedId",
+      "setGeneratedId",
+      "value",
+      "PendingRow"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java": [
+      "ReferenceResolver",
+      "resolve",
+      "resolveValue",
+      "ReferenceResolver"
+    ],
+    "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java": [
+      "VirtualMachine",
+      "register",
+      "get",
+      "has",
+      "countRelatedPending",
+      "countRelatedDb",
+      "existsInDb",
+      "VirtualMachine"
+    ],
+    "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java": [],
+    "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java": [],
+    "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java": [],
+    "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java": [],
+    "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java": [
+      "dataSource",
+      "engine",
+      "create",
+      "H2Fixture"
+    ],
+    "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java": [],
+    "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java": [],
+    "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java": [],
+    "engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java": [
+      "getSupportedSourceVersion",
+      "process",
+      "SchemaTableDefProcessor"
+    ],
+    "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java": [
+      "generate",
+      "TableDefGenerator"
+    ],
+    "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java": [],
+    "engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java": []
+  },
+  "batches": [
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+          "language": "java",
+          "sizeLines": 182,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+          "language": "java",
+          "sizeLines": 67,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+          "language": "java",
+          "sizeLines": 18,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "language": "java",
+          "sizeLines": 20,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "language": "java",
+          "sizeLines": 82,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "language": "java",
+          "sizeLines": 24,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "language": "java",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+          "language": "java",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+          "language": "java",
+          "sizeLines": 103,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java",
+          "language": "java",
+          "sizeLines": 60,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+          "language": "java",
+          "sizeLines": 102,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+          "language": "java",
+          "sizeLines": 61,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+          "language": "java",
+          "sizeLines": 74,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": [
+          "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+          "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+          "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+          "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+          "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+          "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+          "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java"
+        ],
+        "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+        ],
+        "engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java": [],
+        "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java": [],
+        "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java": [],
+        "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java": [],
+        "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java": [],
+        "engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java": [],
+        "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java"
+        ],
+        "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java"
+        ],
+        "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java"
+        ],
+        "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java": [
+          "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java"
+        ],
+        "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+          "engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java"
+        ]
+      },
+      "neighborMap": {
+        "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+            "batchIndex": 1,
+            "symbols": [
+              "ConstraintEngine",
+              "checkPre",
+              "checkPost",
+              "ConstraintEngine"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "Executor",
+              "execute",
+              "Executor"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "QueryExecutor",
+              "run",
+              "runPage",
+              "QueryExecutor"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+            "batchIndex": 3,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+            "batchIndex": 4,
+            "symbols": [
+              "loadDirectory",
+              "loadClasspath",
+              "SchemaLoader"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+            "batchIndex": 4,
+            "symbols": [
+              "of",
+              "find",
+              "require",
+              "entities",
+              "relationGraph",
+              "SchemaRegistry"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+            "batchIndex": 1,
+            "symbols": [
+              "Validator",
+              "validate",
+              "toBigDecimal",
+              "Validator"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java",
+            "batchIndex": 1,
+            "symbols": [
+              "ReferenceResolver",
+              "resolve",
+              "resolveValue",
+              "ReferenceResolver"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+            "batchIndex": 1,
+            "symbols": [
+              "VirtualMachine",
+              "register",
+              "get",
+              "has",
+              "countRelatedPending",
+              "countRelatedDb",
+              "existsInDb",
+              "VirtualMachine"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java",
+            "batchIndex": 1,
+            "symbols": [
+              "isReference",
+              "parse",
+              "ReferenceParser"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+            "batchIndex": 1,
+            "symbols": [
+              "Validator",
+              "validate",
+              "toBigDecimal",
+              "Validator"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "QueryExecutor",
+              "run",
+              "runPage",
+              "QueryExecutor"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "QueryExecutor",
+              "run",
+              "runPage",
+              "QueryExecutor"
+            ]
+          }
+        ],
+        "engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          }
+        ],
+        "engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          }
+        ],
+        "engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          }
+        ],
+        "engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+            "batchIndex": 1,
+            "symbols": []
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+          "language": "java",
+          "sizeLines": 204,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+          "language": "java",
+          "sizeLines": 8,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+          "language": "java",
+          "sizeLines": 7,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+          "language": "java",
+          "sizeLines": 78,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+          "language": "java",
+          "sizeLines": 338,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+          "language": "java",
+          "sizeLines": 15,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+          "language": "java",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+          "language": "java",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+          "language": "java",
+          "sizeLines": 74,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+          "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+          "engine-core/src/main/java/com/intentio/engine/validate/Validator.java"
+        ],
+        "engine-core/src/main/java/com/intentio/engine/intent/Filter.java": [],
+        "engine-core/src/main/java/com/intentio/engine/intent/Order.java": [],
+        "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java": [
+          "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java"
+        ],
+        "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": [
+          "engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+          "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+          "engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java",
+          "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+          "engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+          "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+        ],
+        "engine-core/src/main/java/com/intentio/engine/result/PageResult.java": [],
+        "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java": [],
+        "engine-core/src/main/java/com/intentio/engine/schema/FieldType.java": [],
+        "engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java": []
+      },
+      "neighborMap": {
+        "engine-core/src/main/java/com/intentio/engine/execute/Executor.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+            "batchIndex": 1,
+            "symbols": [
+              "insert",
+              "update",
+              "delete",
+              "deleteWhere",
+              "as",
+              "trusted",
+              "type",
+              "entity",
+              "fields",
+              "name",
+              "targetId",
+              "conditions",
+              "isTrusted",
+              "setField",
+              "Op"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+            "batchIndex": 1,
+            "symbols": [
+              "sql",
+              "sql",
+              "SqlLogger"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+            "batchIndex": 4,
+            "symbols": [
+              "of",
+              "find",
+              "require",
+              "entities",
+              "relationGraph",
+              "SchemaRegistry"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+            "batchIndex": 1,
+            "symbols": [
+              "Validator",
+              "validate",
+              "toBigDecimal",
+              "Validator"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+            "batchIndex": 2,
+            "symbols": [
+              "load",
+              "loadClasspath",
+              "registry",
+              "execute",
+              "query",
+              "queryPage",
+              "SchemaEngine"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+            "batchIndex": 2,
+            "symbols": [
+              "from",
+              "include",
+              "filter",
+              "filter",
+              "filterAnyOf",
+              "orderBy",
+              "orderBy",
+              "orderByDesc",
+              "select",
+              "limit",
+              "offset",
+              "entity",
+              "includes",
+              "filters",
+              "orGroups",
+              "orders",
+              "select",
+              "limit",
+              "offset",
+              "QueryIntent"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java",
+            "batchIndex": 1,
+            "symbols": [
+              "sql",
+              "sql",
+              "SqlLogger"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+            "batchIndex": 2,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+            "batchIndex": 1,
+            "symbols": []
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+            "batchIndex": 4,
+            "symbols": [
+              "of",
+              "find",
+              "require",
+              "entities",
+              "relationGraph",
+              "SchemaRegistry"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+            "batchIndex": 2,
+            "symbols": [
+              "load",
+              "loadClasspath",
+              "registry",
+              "execute",
+              "query",
+              "queryPage",
+              "SchemaEngine"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/result/PageResult.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+            "batchIndex": 2,
+            "symbols": [
+              "load",
+              "loadClasspath",
+              "registry",
+              "execute",
+              "query",
+              "queryPage",
+              "SchemaEngine"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+            "batchIndex": 1,
+            "symbols": [
+              "Validator",
+              "validate",
+              "toBigDecimal",
+              "Validator"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+          "language": "java",
+          "sizeLines": 226,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+          "language": "java",
+          "sizeLines": 40,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java",
+          "language": "java",
+          "sizeLines": 88,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java",
+          "language": "java",
+          "sizeLines": 120,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java",
+          "language": "java",
+          "sizeLines": 70,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java": [],
+        "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java": [],
+        "engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java": [
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+        ],
+        "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java": [
+          "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+        ],
+        "engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java": [
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+          "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java"
+        ]
+      },
+      "neighborMap": {
+        "engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+            "batchIndex": 2,
+            "symbols": [
+              "load",
+              "loadClasspath",
+              "registry",
+              "execute",
+              "query",
+              "queryPage",
+              "SchemaEngine"
+            ]
+          }
+        ],
+        "engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+            "batchIndex": 1,
+            "symbols": [
+              "ConstraintEngine",
+              "checkPre",
+              "checkPost",
+              "ConstraintEngine"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+            "batchIndex": 1,
+            "symbols": [
+              "RefCheckRule",
+              "check",
+              "existsInDb",
+              "RefCheckRule"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+            "batchIndex": 1,
+            "symbols": [
+              "RequireHasRule",
+              "check",
+              "RequireHasRule"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java",
+            "batchIndex": 1,
+            "symbols": [
+              "StockCheckRule",
+              "check",
+              "StockCheckRule"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "Executor",
+              "execute",
+              "Executor"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+            "batchIndex": 3,
+            "symbols": [
+              "QueryExecutor",
+              "run",
+              "runPage",
+              "QueryExecutor"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+            "batchIndex": 2,
+            "symbols": [
+              "load",
+              "loadClasspath",
+              "registry",
+              "execute",
+              "query",
+              "queryPage",
+              "SchemaEngine"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+            "batchIndex": 1,
+            "symbols": [
+              "Validator",
+              "validate",
+              "toBigDecimal",
+              "Validator"
+            ]
+          },
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+            "batchIndex": 1,
+            "symbols": [
+              "VirtualMachine",
+              "register",
+              "get",
+              "has",
+              "countRelatedPending",
+              "countRelatedDb",
+              "existsInDb",
+              "VirtualMachine"
+            ]
+          }
+        ],
+        "engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java": [
+          {
+            "path": "engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+            "batchIndex": 1,
+            "symbols": []
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "engine-core/pom.xml",
+          "language": "xml",
+          "sizeLines": 49,
+          "fileCategory": "config"
+        },
+        {
+          "path": "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+          "language": "java",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+          "language": "java",
+          "sizeLines": 94,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-core/src/test/resources/test-ddl-ext.sql",
+          "language": "sql",
+          "sizeLines": 44,
+          "fileCategory": "data"
+        },
+        {
+          "path": "engine-core/src/test/resources/test-schema-ext/account.yml",
+          "language": "yaml",
+          "sizeLines": 46,
+          "fileCategory": "config"
+        },
+        {
+          "path": "engine-core/src/test/resources/test-schema/drug.yml",
+          "language": "yaml",
+          "sizeLines": 21,
+          "fileCategory": "config"
+        },
+        {
+          "path": "engine-core/src/test/resources/test-schema/prescription.yml",
+          "language": "yaml",
+          "sizeLines": 34,
+          "fileCategory": "config"
+        },
+        {
+          "path": "engine-processor/pom.xml",
+          "language": "xml",
+          "sizeLines": 54,
+          "fileCategory": "config"
+        },
+        {
+          "path": "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+          "language": "java",
+          "sizeLines": 27,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+          "language": "java",
+          "sizeLines": 45,
+          "fileCategory": "code"
+        },
+        {
+          "path": "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+          "language": "java",
+          "sizeLines": 37,
+          "fileCategory": "code"
+        },
+        {
+          "path": "pom.xml",
+          "language": "xml",
+          "sizeLines": 123,
+          "fileCategory": "config"
+        }
+      ],
+      "batchImportData": {
+        "engine-core/pom.xml": [],
+        "engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java": [],
+        "engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java": [],
+        "engine-core/src/test/resources/test-ddl-ext.sql": [],
+        "engine-core/src/test/resources/test-schema-ext/account.yml": [],
+        "engine-core/src/test/resources/test-schema/drug.yml": [],
+        "engine-core/src/test/resources/test-schema/prescription.yml": [],
+        "engine-processor/pom.xml": [],
+        "engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java": [],
+        "engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java": [],
+        "engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java": [],
+        "pom.xml": []
+      },
+      "neighborMap": {}
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+[
+  {
+    "id": "layer:engine-entry",
+    "name": "引擎入口层",
+    "description": "SchemaEngine 作为整个引擎的外部公共 API 入口，聚合校验、约束、执行与查询四大子流程，并通过 Maven 父/子 POM 定义模块依赖与构建配置",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/SchemaEngine.java",
+      "config:pom.xml",
+      "config:engine-core/pom.xml",
+      "config:engine-processor/pom.xml"
+    ]
+  },
+  {
+    "id": "layer:intent-model",
+    "name": "意图模型层",
+    "description": "以纯数据对象与枚举表示数据库操作意图（写操作 Op、查询意图 QueryIntent、过滤/排序条件等），并提供跨操作字段引用的解析能力",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/intent/Op.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/OpType.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/IntentGroup.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/Filter.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/FilterOp.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/Order.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/QueryIntent.java",
+      "file:engine-core/src/main/java/com/intentio/engine/intent/ReferenceParser.java"
+    ]
+  },
+  {
+    "id": "layer:schema-definition",
+    "name": "Schema 定义层",
+    "description": "定义实体、字段、关联关系及完整性约束的 Schema 数据结构，并负责从 YAML 文件加载、注册 Schema 以及用有向图维护实体间的关系拓扑",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/schema/EntityDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/FieldDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/FieldType.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/RelationDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/RelationGraph.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/Rule.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/IntegrityDef.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaRegistry.java",
+      "file:engine-core/src/main/java/com/intentio/engine/schema/SchemaLoader.java",
+      "config:engine-core/src/test/resources/test-schema/drug.yml",
+      "config:engine-core/src/test/resources/test-schema/prescription.yml",
+      "config:engine-core/src/test/resources/test-schema-ext/account.yml"
+    ]
+  },
+  {
+    "id": "layer:validation-constraint",
+    "name": "校验与约束层",
+    "description": "在意图执行前后对操作字段进行合法性校验（Validator）以及外键引用、关联数量、库存扣减等完整性约束检查（ConstraintEngine 及各规则实现）",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/validate/Validator.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/ConstraintEngine.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/RefCheckRule.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/RequireHasRule.java",
+      "file:engine-core/src/main/java/com/intentio/engine/constraint/StockCheckRule.java"
+    ]
+  },
+  {
+    "id": "layer:execution-engine",
+    "name": "执行引擎层",
+    "description": "通过虚拟机（VirtualMachine）调度批次操作，利用拓扑排序解决字段引用依赖，并由 Executor 将写操作意图转译为 JDBC 预处理语句执行",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/execute/Executor.java",
+      "file:engine-core/src/main/java/com/intentio/engine/execute/DeleteTargets.java",
+      "file:engine-core/src/main/java/com/intentio/engine/execute/TopologySorter.java",
+      "file:engine-core/src/main/java/com/intentio/engine/vm/VirtualMachine.java",
+      "file:engine-core/src/main/java/com/intentio/engine/vm/PendingRow.java",
+      "file:engine-core/src/main/java/com/intentio/engine/vm/ReferenceResolver.java"
+    ]
+  },
+  {
+    "id": "layer:query-engine",
+    "name": "查询引擎层",
+    "description": "将 QueryIntent 转译为带分页、过滤和排序的参数化 SQL，并通过 JDBC 执行后封装为结构化查询结果",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/query/QueryExecutor.java",
+      "file:engine-core/src/main/java/com/intentio/engine/jdbc/JdbcValueCoercer.java"
+    ]
+  },
+  {
+    "id": "layer:result-logging",
+    "name": "结果与日志层",
+    "description": "定义写操作与查询操作的结果数据结构（IntentResult、QueryResult、PageResult、IntentError），并提供 SQL 语句的日志记录工具",
+    "nodeIds": [
+      "file:engine-core/src/main/java/com/intentio/engine/result/IntentResult.java",
+      "file:engine-core/src/main/java/com/intentio/engine/result/IntentError.java",
+      "file:engine-core/src/main/java/com/intentio/engine/result/QueryResult.java",
+      "file:engine-core/src/main/java/com/intentio/engine/result/PageResult.java",
+      "file:engine-core/src/main/java/com/intentio/engine/logging/SqlLogger.java"
+    ]
+  },
+  {
+    "id": "layer:test",
+    "name": "测试层",
+    "description": "覆盖删除增强、查询能力、字段权限策略及 Schema 加载的 JUnit 5 测试套件，以及 H2 内存数据库测试基础设施、DDL 脚本与测试用 YAML Schema 数据",
+    "nodeIds": [
+      "file:engine-core/src/test/java/com/intentio/engine/execute/DeleteEnhancementTest.java",
+      "file:engine-core/src/test/java/com/intentio/engine/query/QueryCapabilitiesTest.java",
+      "file:engine-core/src/test/java/com/intentio/engine/support/H2Fixture.java",
+      "file:engine-core/src/test/java/com/intentio/engine/validate/FieldPolicyTest.java",
+      "file:engine-core/src/test/java/com/intentio/engine/schema/SchemaLoaderTest.java",
+      "table:engine-core/src/test/resources/test-ddl-ext.sql:account",
+      "table:engine-core/src/test/resources/test-ddl-ext.sql:post",
+      "table:engine-core/src/test/resources/test-ddl-ext.sql:comment",
+      "table:engine-core/src/test/resources/test-ddl-ext.sql:audit",
+      "table:engine-core/src/test/resources/test-ddl-ext.sql:token",
+      "file:engine-core/src/test/java/com/intentio/engine/jdbc/JdbcValueCoercerTest.java",
+      "file:engine-processor/src/test/java/com/intentio/engine/processor/ProcessorConfigTest.java",
+      "file:engine-processor/src/test/java/com/intentio/engine/processor/TableDefGeneratorTest.java",
+      "file:engine-core/src/test/resources/test-ddl-ext.sql"
+    ]
+  },
+  {
+    "id": "layer:codegen-processor",
+    "name": "编译期代码生成层",
+    "description": "基于 Java Annotation Processor 在编译期扫描 @SchemaTableDef 注解，读取 Schema 定义并生成 TableDef 类型安全代码，包含 JavaPoet 代码生成与 Auto Service 处理器注册",
+    "nodeIds": [
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/NamingUtils.java",
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/ProcessorConfig.java",
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/SchemaTableDefProcessor.java",
+      "file:engine-processor/src/main/java/com/intentio/engine/processor/TableDefGenerator.java"
+    ]
+  }
+]
