@@ -40,7 +40,14 @@ public final class Executor {
     public Object execute(Op op, Map<String, Object> resolvedFields, Connection conn) throws SQLException {
         return switch (op.type()) {
             case INSERT -> doInsert(op, resolvedFields, conn);
-            case UPDATE -> { doUpdate(op, resolvedFields, conn); yield op.targetId(); }
+            case UPDATE -> {
+                int affected = doUpdate(op, resolvedFields, conn);
+                if (affected == 0) {
+                    throw new IllegalArgumentException(
+                        op.entity() + "(id=" + op.targetId() + ") not found");
+                }
+                yield affected;
+            }
             case DELETE -> { doDelete(op, conn); yield op.targetId(); }
         };
     }
@@ -75,7 +82,7 @@ public final class Executor {
         return null;
     }
 
-    private void doUpdate(Op op, Map<String, Object> fields, Connection conn) throws SQLException {
+    private int doUpdate(Op op, Map<String, Object> fields, Connection conn) throws SQLException {
         EntityDef entity = registry.require(op.entity());
         List<String> cols = new ArrayList<>(fields.keySet());
         String setClause = String.join(", ", cols.stream().map(c -> c + " = ?").toList());
@@ -88,7 +95,7 @@ public final class Executor {
             int i = 1;
             for (String col : cols) bindParam(ps, i++, fields.get(col), entity.fields().get(col));
             ps.setObject(i, op.targetId());
-            ps.executeUpdate();
+            return ps.executeUpdate();
         }
     }
 

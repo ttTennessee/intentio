@@ -5,6 +5,7 @@ import com.intentio.engine.execute.Executor;
 import com.intentio.engine.execute.TopologySorter;
 import com.intentio.engine.intent.IntentGroup;
 import com.intentio.engine.intent.Op;
+import com.intentio.engine.intent.OpType;
 import com.intentio.engine.intent.QueryIntent;
 import com.intentio.engine.query.QueryExecutor;
 import com.intentio.engine.result.IntentError;
@@ -116,7 +117,7 @@ public final class SchemaEngine {
                 }
 
                 Object generated = executor.execute(op, resolved, conn);
-                if (generated != null) {
+                if (op.type() == OpType.INSERT && generated != null) {
                     row.setGeneratedId(generated);
                     generatedIds.put(op.name(), generated);
                     log.debug("generated id for {}: {}", op.name(), generated);
