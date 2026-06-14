@@ -11,6 +11,7 @@
 
     <modules>
         <module>engine-core</module>
+        <module>engine-processor</module>
         <module>engine-example</module>
     </modules>
 
@@ -28,6 +29,8 @@
         <logback.version>1.4.14</logback.version>
         <junit.version>5.10.2</junit.version>
         <h2.version>2.2.224</h2.version>
+        <javapoet.version>1.13.0</javapoet.version>
+        <auto-service.version>1.1.1</auto-service.version>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +85,21 @@
                 <groupId>com.intentio</groupId>
                 <artifactId>engine-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.intentio</groupId>
+                <artifactId>engine-processor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${javapoet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto-service.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
